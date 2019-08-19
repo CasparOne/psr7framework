@@ -15,13 +15,9 @@ $request = ServerRequestFactory::fromGlobals();
 $name = $request->getQueryParams()['name'] ?? 'Guest';
 
 $response = (new HtmlResponse('Hello, ' . $name . '!'))
-    ->withHeader('X-Developer', 'CasparOne');
+    ->withHeader('X-Developer', 'CasparOne')
+    ;
 
 ### Send
-
-header('HTTP/1.0' . $response->getStatusCode() . ' ' . $response->getReasonPhrase());
-foreach ($response->getHeaders() as $name => $value) {
-    header($name. ':' . implode(', ', $value));
-}
-
-echo $response->getBody();
+$emmiter = new \Framework\Http\ResponseSender();
+$emmiter->send($response);
