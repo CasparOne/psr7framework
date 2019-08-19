@@ -1,15 +1,23 @@
 <?php
 chdir(dirname(__DIR__));
 
-use Framework\Http\Request;
+use Framework\Http\RequestFactory;
 
 require 'vendor/autoload.php';
+### Init
+$request = RequestFactory::fromGlobals();
 
-$request = (new Request())
-    ->withQueryParams($_GET)
-    ->withQueryParams($_POST);
 
+### Action
 $name = $request->getQueryParams()['name'] ?? 'Guest';
-header('X-Developer: Volodin V.');
 
-echo 'Hello ' . $name . '!';
+$response = (new \Framework\Http\Response('Hello, ' . $name . '!'))
+    ->withHeader('X-Developer', 'CasparOne');
+
+### Send
+header('HTTP/1.0' . $response->getStatusCode() . ' ' . $response->getReasonPhrase());
+foreach ($response->getHeaders() as $header => $value) {
+    header($header. ':' . $value);
+}
+
+echo $response->getBody();

@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class RequestTest extends TestCase
 {
-    public function testEmpty(): void
+    public function testEmpty() : void
     {
         $request1 = new Request();
 
@@ -17,7 +17,7 @@ class RequestTest extends TestCase
         self::assertNull($request1->getParsedBody());
     }
 
-    public function testQueryParams(): void
+    public function testQueryParams() : void
     {
         $request = (new Request())
             ->withQueryParams($data = [
@@ -29,7 +29,7 @@ class RequestTest extends TestCase
         self::assertNull($request->getParsedBody());
     }
 
-    public function testParsedBody(): void
+    public function testParsedBody() : void
     {
         $data = ['title' => 'Title'];
         $request = (new Request())
