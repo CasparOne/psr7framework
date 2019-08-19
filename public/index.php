@@ -4,6 +4,7 @@ chdir(dirname(__DIR__));
 
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\ServerRequestFactory;
+use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 
 
 require 'vendor/autoload.php';
@@ -19,5 +20,6 @@ $response = (new HtmlResponse('Hello, ' . $name . '!'))
     ;
 
 ### Send
-$emmiter = new \Framework\Http\ResponseSender();
-$emmiter->send($response);
+
+$emitter = new SapiEmitter();
+$emitter->emit($response);
