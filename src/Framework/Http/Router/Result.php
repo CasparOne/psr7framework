@@ -45,7 +45,7 @@ class Result
     /**
      * @return array
      */
-    public function getAttribute() : array
+    public function getAttributes() : array
     {
         return $this->attributes;
     }
