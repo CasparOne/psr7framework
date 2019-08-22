@@ -3,12 +3,7 @@
 
 namespace Framework\Http\Router;
 
-/**
- * Class Route
- * it used instead of ordinary array
- *
- * @package Framework\Http\Router
- */
+
 class Route
 {
     public $name;
@@ -17,14 +12,6 @@ class Route
     public $tokens;
     public $methods;
 
-    /**
-     * Route constructor.
-     * @param string $name
-     * @param string $pattern
-     * @param mixed$handler
-     * @param array $methods
-     * @param array $tokens
-     */
     public function __construct($name, $pattern, $handler, array $methods = [], array $tokens= [])
     {
         $this->name = $name;
