@@ -2,6 +2,10 @@
 chdir(dirname(__DIR__));
 
 
+use App\Http\Action\AboutAction;
+use App\Http\Action\Blog\IndexAction;
+use App\Http\Action\Blog\ShowAction;
+use App\Http\Action\HelloAction;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
 use Framework\Http\Router\RouteCollection;
 use Framework\Http\Router\Router;
@@ -17,28 +21,13 @@ require 'vendor/autoload.php';
 
 $routes = new RouteCollection();
 
-$routes->get('home', '/', function (ServerRequestInterface $request) {
-    $name = $request->getQueryParams()['name'] ??  'GUEST';
-    return new HtmlResponse('Hello, ' . $name . '!!');
-});
+$routes->get('home', '/', new HelloAction());
 
-$routes->get('about', '/about', function () {
-    return new HtmlResponse('I am a Site. It\'s about section.' );
-});
+$routes->get('about', '/about', new AboutAction());
 
-$routes->get('/blog', '/blog', function () {
-    return new JsonResponse([
-        ['id' => 2, 'title' => 'Second blog post'],
-        ['id' => 1, 'title' => 'First blog post'],
-    ]);
-});
-$routes->get('/blog_show', '/blog/{id}', function (ServerRequestInterface $request) {
-    $id = $request->getAttribute('id');
-    if ($id > 2) {
-        return new JsonResponse(['error' => 'Undefined Page'], 404);
-    }
-    return new JsonResponse(['id' => $id, 'title' => 'Post #' . $id]);
-}, ['id' => '\d+']);
+$routes->get('/blog', '/blog', new IndexAction());
+
+$routes->get('/blog_show', '/blog/{id}', new ShowAction(),['id' => '\d+']);
 
 $router = new Router($routes);
 
