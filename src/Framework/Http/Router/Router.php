@@ -6,15 +6,28 @@ use Framework\Http\Router\Exception\RouteNotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
 
+/**
+ * Class Router
+ * @package Framework\Http\Router
+ */
 class Router
 {
     private $routes;
 
+    /**
+     * Router constructor.
+     * @param RouteCollection $routes
+     */
     public function __construct(RouteCollection $routes)
     {
         $this->routes = $routes;
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @return Result
+     * @throws RequestNotMatchedException
+     */
     public function match(ServerRequestInterface $request) : Result
     {
         foreach ($this->routes->getRoutes() as $route) {
@@ -25,6 +38,12 @@ class Router
         throw new RequestNotMatchedException($request);
     }
 
+    /**
+     * @param $name
+     * @param array $params
+     * @return string
+     * @throws RouteNotFoundException
+     */
     public function generate($name, array $params = []) : string
     {
         foreach ($this->routes->getRoutes() as $route) {

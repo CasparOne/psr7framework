@@ -31,7 +31,7 @@ class Result
      */
     public function getName() : string
     {
-        return (string) $this->name;
+        return $this->name;
     }
 
     /**

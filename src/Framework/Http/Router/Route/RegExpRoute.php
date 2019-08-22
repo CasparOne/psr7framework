@@ -1,12 +1,16 @@
 <?php
 
+namespace Framework\Http\Router\Route;
 
-namespace Framework\Http\Router;
-
+use Framework\Http\Router\Result;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 
-class Route
+/**
+ * Class RegExpRoute
+ * @package Framework\Http\Router\Route
+ */
+class RegExpRoute implements RouteInterface
 {
     public $name;
     public $pattern;
@@ -14,7 +18,15 @@ class Route
     public $tokens;
     public $methods;
 
-    public function __construct($name, $pattern, $handler, array $methods = [], array $tokens= [])
+    /**
+     * RegExpRoute constructor.
+     * @param string $name
+     * @param string $pattern
+     * @param $handler
+     * @param array $methods
+     * @param array $tokens
+     */
+    public function __construct(string $name, string $pattern, $handler, array $methods = [], array $tokens= [])
     {
         $this->name = $name;
         $this->pattern = $pattern;
@@ -23,6 +35,10 @@ class Route
         $this->methods = $methods;
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @return Result|null
+     */
     public function match(ServerRequestInterface $request) : ?Result
     {
         if ($this->methods && !in_array($request->getMethod(), $this->methods, true)) {
@@ -43,6 +59,11 @@ class Route
         return null;
     }
 
+    /**
+     * @param $name
+     * @param array $params
+     * @return string|null
+     */
     public function generate($name, array $params = []) : ?string
     {
         $arguments = array_filter($params);
@@ -61,6 +82,4 @@ class Route
         }
         return null;
     }
-
-
 }

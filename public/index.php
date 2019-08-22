@@ -2,6 +2,9 @@
 chdir(dirname(__DIR__));
 
 
+use Framework\Http\Router\Exception\RequestNotMatchedException;
+use Framework\Http\Router\RouteCollection;
+use Framework\Http\Router\Router;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\ServerRequestFactory;
@@ -12,46 +15,45 @@ use Zend\Diactoros\Response\JsonResponse;
 require 'vendor/autoload.php';
 ### Initialization
 
+$routes = new RouteCollection();
+
+$routes->get('home', '/', function (ServerRequestInterface $request) {
+    $name = $request->getQueryParams()['name'] ??  'GUEST';
+    return new HtmlResponse('Hello, ' . $name . '!!');
+});
+
+$routes->get('about', '/about', function () {
+    return new HtmlResponse('I am a Site. It\'s about section.' );
+});
+
+$routes->get('/blog', '/blog', function () {
+    return new JsonResponse([
+        ['id' => 2, 'title' => 'Second blog post'],
+        ['id' => 1, 'title' => 'First blog post'],
+    ]);
+});
+$routes->get('/blog_show', '/blog/{id}', function (ServerRequestInterface $request) {
+    $id = $request->getAttribute('id');
+    if ($id > 2) {
+        return new JsonResponse(['error' => 'Undefined Page'], 404);
+    }
+    return new JsonResponse(['id' => $id, 'title' => 'Post #' . $id]);
+}, ['id' => '\d+']);
+
+$router = new Router($routes);
+
+### Running
 $request = ServerRequestFactory::fromGlobals();
 
-### Action
-$path = $request->getUri()->getPath();
-
-if ('/' === $path) {
-    $action = function (ServerRequestInterface $request) {
-        $name = $request->getQueryParams()['name'] ?? 'Guest';
-        return new HtmlResponse('Hello, ' . $name . '!');
-    };
-} elseif ('/about' === $path) {
-    $action = function (ServerRequestInterface $request) {
-        $name = $request->getQueryParams()['name'] ?? 'Guest';
-        return new HtmlResponse('It\'s a simple site and About section');
-    };
-} elseif ('/blog' === $path) {
-    $action = function (ServerRequestInterface $request) {
-        return new JsonResponse([
-            ['id' => 2, 'title' => 'Second blog post'],
-            ['id' => 1, 'title' => 'First blog post'],
-        ]);
-    };
-} elseif (preg_match('#^/blog/(?P<id>\d+)$#i', $path, $matches)) {
-
-    $request = $request->withAttribute('id', $matches['id']);
-    $action = function (ServerRequestInterface $request) {
-        $id = $request->getAttribute('id');
-        if ($id >2) {
-            $response = new JsonResponse(['error' => 'Undefined page'], 404);
-        } else {
-            $response = new JsonResponse(['id' => $id, 'title' => 'Post #' . $id]);
-        }
-        return $response;
-    };
-}
-
-if (is_callable($action)) {
+try {
+    $result = $router->match($request);
+    foreach ($result->getAttribute() as $attribute => $value) {
+        $request = $request->withAttribute($attribute, $value);
+    }
+    $action = $result->getHandler();
     $response = $action($request);
-} else {
-    $response = new JsonResponse(['error' => 'Undefined page'], 404);
+} catch (RequestNotMatchedException $exception) {
+    $response = new HtmlResponse('Undefined Page', 404);
 }
 
 ### Postprocessing
