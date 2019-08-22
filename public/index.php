@@ -9,11 +9,9 @@ use App\Http\Action\HelloAction;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
 use Framework\Http\Router\RouteCollection;
 use Framework\Http\Router\Router;
-use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
-use Zend\Diactoros\Response\JsonResponse;
 
 
 require 'vendor/autoload.php';
@@ -21,13 +19,13 @@ require 'vendor/autoload.php';
 
 $routes = new RouteCollection();
 
-$routes->get('home', '/', new HelloAction());
+$routes->get('home', '/', HelloAction::class);
 
-$routes->get('about', '/about', new AboutAction());
+$routes->get('about', '/about', AboutAction::class);
 
-$routes->get('/blog', '/blog', new IndexAction());
+$routes->get('/blog', '/blog', IndexAction::class);
 
-$routes->get('/blog_show', '/blog/{id}', new ShowAction(),['id' => '\d+']);
+$routes->get('/blog_show', '/blog/{id}', ShowAction::class,['id' => '\d+']);
 
 $router = new Router($routes);
 
@@ -39,7 +37,8 @@ try {
     foreach ($result->getAttribute() as $attribute => $value) {
         $request = $request->withAttribute($attribute, $value);
     }
-    $action = $result->getHandler();
+    $handler = $result->getHandler();
+    $action = is_string($handler) ? new $handler : $handler;
     $response = $action($request);
 } catch (RequestNotMatchedException $exception) {
     $response = new HtmlResponse('Undefined Page', 404);
