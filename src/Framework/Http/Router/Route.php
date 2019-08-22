@@ -3,7 +3,6 @@
 
 namespace Framework\Http\Router;
 
-
 class Route
 {
     public $name;
@@ -20,5 +19,4 @@ class Route
         $this->tokens = $tokens;
         $this->methods = $methods;
     }
-
 }

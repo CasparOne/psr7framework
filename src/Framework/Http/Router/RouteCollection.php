@@ -3,8 +3,6 @@
 
 namespace Framework\Http\Router;
 
-use Framework\Http\Router\Route\RegExpRoute;
-use Framework\Http\Router\Route\RouteInterface;
 /**
  * Class RouteCollection
  * @package Framework\Http\Router
@@ -13,7 +11,7 @@ class RouteCollection
 {
     private $routes = [];
 
-    public function addRoute(RouteInterface $route) : void
+    public function addRoute(Route $route) : void
     {
         $this->routes = $route;
     }
@@ -26,7 +24,7 @@ class RouteCollection
      */
     public function any($name, $pattern, $handler, array $tokens = []) : void
     {
-        $this->addRoute(new RegExpRoute($name, $pattern, $handler,[], $tokens));
+        $this->addRoute(new Route($name, $pattern, $handler,[], $tokens));
     }
 
     /**
@@ -37,7 +35,7 @@ class RouteCollection
      */
     public function get($name, $pattern, $handler, array $tokens = []) : void
     {
-        $this->addRoute(new RegExpRoute($name, $pattern, $handler, ['GET'], $tokens));
+        $this->addRoute(new Route($name, $pattern, $handler, ['GET'], $tokens));
     }
 
     /**
@@ -48,11 +46,11 @@ class RouteCollection
      */
     public function post($name, $pattern, $handler, array $tokens = []) : void
     {
-        $this->addRoute(new RegExpRoute($name, $pattern, $handler, ['POST'], $tokens));
+        $this->addRoute(new Route($name, $pattern, $handler, ['POST'], $tokens));
     }
 
     /**
-     * @return RegExpRoute[]
+     * @return Route[]
      */
     public function getRoutes()
     {
