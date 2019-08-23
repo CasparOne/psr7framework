@@ -10,7 +10,7 @@ use Framework\Http\Router\Exception\RequestNotMatchedException;
  * Class Router
  * @package Framework\Http\Router
  */
-class Router
+class SimpleRouter implements RouterInterface
 {
     private $routes;
 

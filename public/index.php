@@ -9,7 +9,7 @@ use App\Http\Action\HelloAction;
 use Framework\Http\ActionResolver;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
 use Framework\Http\Router\RouteCollection;
-use Framework\Http\Router\Router;
+use Framework\Http\Router\SimpleRouter;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
@@ -17,11 +17,13 @@ use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 
 require 'vendor/autoload.php';
 ### Initialization
-/*
- * Creating route collection
- */
+// Creating route collection
 $routes = new RouteCollection();
 
+// Router initialization
+$router = new SimpleRouter($routes);
+
+// Routes settings
 $routes->get('home', '/', HelloAction::class);
 
 $routes->get('about', '/about', AboutAction::class);
@@ -29,9 +31,6 @@ $routes->get('about', '/about', AboutAction::class);
 $routes->get('/blog', '/blog', IndexAction::class);
 
 $routes->get('/blog_show', '/blog/{id}', ShowAction::class,['id' => '\d+']);
-
-// Router initialization with previously created RouteCollection
-$router = new Router($routes);
 
 // Creating Resolver with some actions creation logic
 $resolver = new ActionResolver();
