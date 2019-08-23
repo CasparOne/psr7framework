@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2cbfdcd1d174f766411ddfdbcbfb8834",
+    "content-hash": "37b570da59cdb48c9520b0e47d93b1e2",
     "packages": [
         {
             "name": "aura/router",
@@ -1270,16 +1270,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "7.5.14",
+            "version": "7.5.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "2834789aeb9ac182ad69bfdf9ae91856a59945ff"
+                "reference": "d79c053d972856b8b941bb233e39dc521a5093f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/2834789aeb9ac182ad69bfdf9ae91856a59945ff",
-                "reference": "2834789aeb9ac182ad69bfdf9ae91856a59945ff",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/d79c053d972856b8b941bb233e39dc521a5093f0",
+                "reference": "d79c053d972856b8b941bb233e39dc521a5093f0",
                 "shasum": ""
             },
             "require": {
@@ -1350,7 +1350,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-07-15T06:24:08+00:00"
+            "time": "2019-08-21T07:05:16+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -2076,6 +2076,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
+        "ext-json": "*",
         "php": "^7.3"
     },
     "platform-dev": []
