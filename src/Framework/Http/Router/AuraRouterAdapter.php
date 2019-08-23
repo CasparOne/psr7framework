@@ -30,7 +30,7 @@ class AuraRouterAdapter implements RouterInterface
      * @throws RequestNotMatchedException
      * @return Result
      */
-    public function match(ServerRequestInterface $request): ?Result
+    public function match(ServerRequestInterface $request) : Result
     {
         $matcher = $this->aura->getMatcher();
         if ($route = $matcher->match($request)) {
@@ -46,7 +46,7 @@ class AuraRouterAdapter implements RouterInterface
      * @return string
      * @throws RouteNotFoundException
      */
-    public function generate($name, array $params = []): ?string
+    public function generate($name, array $params = []): string
     {
         $generator = $this->aura->getGenerator();
         try {

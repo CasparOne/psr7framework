@@ -1,27 +1,27 @@
 <?php
 chdir(dirname(__DIR__));
 
-
 use App\Http\Action\AboutAction;
 use App\Http\Action\Blog\IndexAction;
 use App\Http\Action\Blog\ShowAction;
 use App\Http\Action\HelloAction;
+use Aura\Router\RouterContainer;
 use Framework\Http\ActionResolver;
+use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
-use Framework\Http\Router\RouteCollection;
-use Framework\Http\Router\SimpleRouter;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 
-
 require 'vendor/autoload.php';
 ### Initialization
-// Creating route collection
-$routes = new RouteCollection();
+$aura = new RouterContainer();
+$routes = $aura->getMap();
 
 // Router initialization
-$router = new SimpleRouter($routes);
+$router = new AuraRouterAdapter($aura);
+// Creating Resolver with some actions creation logic
+$resolver = new ActionResolver();
 
 // Routes settings
 $routes->get('home', '/', HelloAction::class);
@@ -30,10 +30,7 @@ $routes->get('about', '/about', AboutAction::class);
 
 $routes->get('/blog', '/blog', IndexAction::class);
 
-$routes->get('/blog_show', '/blog/{id}', ShowAction::class,['id' => '\d+']);
-
-// Creating Resolver with some actions creation logic
-$resolver = new ActionResolver();
+$routes->get('/blog_show', '/blog/{id}', ShowAction::class)->tokens(['id' => '\d+']);
 
 ### Running
 //Initialization a new Request object
