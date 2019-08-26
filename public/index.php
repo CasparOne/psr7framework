@@ -6,8 +6,11 @@ use App\Http\Action\Blog\IndexAction;
 use App\Http\Action\Blog\ShowAction;
 use App\Http\Action\CabinetAction;
 use App\Http\Action\HelloAction;
+use App\Http\Middleware\BasicAuthMiddleware;
+use App\Http\Middleware\ProfilerMiddleware;
 use Aura\Router\RouterContainer;
 use Framework\Http\ActionResolver;
+use Framework\Http\Pipeline\Pipeline;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
 use Psr\Http\Message\ServerRequestInterface;
@@ -21,12 +24,10 @@ $aura = new RouterContainer();
 $routes = $aura->getMap();
 $params = [
     'users' => [
-        'admin' => 'password2',
+        'admin' => 'password',
         'user'  => 'pass2'
     ],
 ];
-$auth = new App\Http\Middleware\BasicAuthMiddleware($params['users']);
-$profiler = new App\Http\Middleware\ProfilerMiddleware();
 
 // Router initialization
 $router = new AuraRouterAdapter($aura);
@@ -34,12 +35,14 @@ $router = new AuraRouterAdapter($aura);
 $resolver = new ActionResolver();
 
 // Routes settings
-$routes->get('cabinet', '/cabinet', function (ServerRequestInterface $request) use ($auth, $profiler){
-    $cabinet = new CabinetAction();
-    return $profiler($request, function (ServerRequestInterface $request) use ($auth, $cabinet) {
-        return $auth($request, function (ServerRequestInterface $request) use ($cabinet) {
-            return $cabinet($request);
-        });
+$routes->get('cabinet', '/cabinet', function (ServerRequestInterface $request) use ($params){
+    $pipeline = new Pipeline();
+    $pipeline->pipe(new BasicAuthMiddleware($params['users']));
+    $pipeline->pipe(new ProfilerMiddleware());
+    $pipeline->pipe(new CabinetAction());
+
+    return $pipeline($request, function () {
+        return new HtmlResponse('Undefined page', 404);
     });
 });
 
