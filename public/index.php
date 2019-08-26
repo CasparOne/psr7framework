@@ -7,6 +7,7 @@ use App\Http\Action\Blog\ShowAction;
 use App\Http\Action\CabinetAction;
 use App\Http\Action\HelloAction;
 use App\Http\Middleware\BasicAuthMiddleware;
+use App\Http\Middleware\CredentialsMiddleware;
 use App\Http\Middleware\NotFoundHandler;
 use App\Http\Middleware\ProfilerMiddleware;
 use Aura\Router\RouterContainer;
@@ -14,6 +15,7 @@ use Framework\Http\Application;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
+use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 
@@ -51,6 +53,8 @@ $router = new AuraRouterAdapter($aura);
 $resolver = new MiddlewareResolver();
 //Initialization a new Request object
 $app = new Application($resolver, new NotFoundHandler());
+// Add some headers to response
+$app->pipe(CredentialsMiddleware::class);
 // Lazy load class Profiler (with closures)
 $app->pipe($resolver->resolve(ProfilerMiddleware::class));
 
@@ -67,12 +71,18 @@ try {
     $app->pipe($result->getHandler());
 } catch (RequestNotMatchedException $exception) {}
 
-$response = $app->run($request);
+try {
+    $response = $app->run($request);
+} catch (Throwable $exception) {
+    $response = new JsonResponse([
+        'error'     => 'Server error',
+        'code'      => $exception->getCode(),
+        'message'   => $exception->getMessage(),
+    ], 500);
+}
 
 
 ### Postprocessing
-// Add some headers to response
-$response = $response->withHeader('X-Developer', 'CasparOne');
 
 ### Sending
 
