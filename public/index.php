@@ -64,10 +64,16 @@ try {
         $request = $request->withAttribute($attribute, $value);
     }
     // Getting Handler name
-    $handlers = $result->getHandler();
-    foreach (is_array($handlers) ? $handlers : [$handlers] as $handler) {
-        $pipeline->pipe($resolver->resolve($handler));
+    $handler = $result->getHandler();
+    if (is_array($handler)) {
+        $middleware = new Pipeline();
+        foreach ($handler as $item) {
+            $middleware->pipe($resolver->resolve($item));
+        }
+    } else {
+        $middleware = $resolver->resolve($handler);
     }
+    $pipeline->pipe($middleware);
 } catch (RequestNotMatchedException $exception) {}
 
 $response = $pipeline($request, new NotFoundHandler());
