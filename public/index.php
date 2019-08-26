@@ -10,8 +10,8 @@ use App\Http\Middleware\BasicAuthMiddleware;
 use App\Http\Middleware\NotFoundHandler;
 use App\Http\Middleware\ProfilerMiddleware;
 use Aura\Router\RouterContainer;
-use Framework\Http\MiddlewareResolver;
-use Framework\Http\Pipeline\Pipeline;
+use Framework\Http\Application;
+use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
 use Zend\Diactoros\ServerRequestFactory;
@@ -50,9 +50,9 @@ $router = new AuraRouterAdapter($aura);
 // Creating Resolver with some actions creation logic
 $resolver = new MiddlewareResolver();
 //Initialization a new Request object
-$pipeline = new Pipeline();
+$app = new Application($resolver, new NotFoundHandler());
 // Lazy load class Profiler (with closures)
-$pipeline->pipe($resolver->resolve(ProfilerMiddleware::class));
+$app->pipe($resolver->resolve(ProfilerMiddleware::class));
 
 ### Running
 $request = ServerRequestFactory::fromGlobals();
@@ -64,19 +64,10 @@ try {
         $request = $request->withAttribute($attribute, $value);
     }
     // Getting Handler name
-    $handler = $result->getHandler();
-    if (is_array($handler)) {
-        $middleware = new Pipeline();
-        foreach ($handler as $item) {
-            $middleware->pipe($resolver->resolve($item));
-        }
-    } else {
-        $middleware = $resolver->resolve($handler);
-    }
-    $pipeline->pipe($middleware);
+    $app->pipe($result->getHandler());
 } catch (RequestNotMatchedException $exception) {}
 
-$response = $pipeline($request, new NotFoundHandler());
+$response = $app->run($request);
 
 
 ### Postprocessing

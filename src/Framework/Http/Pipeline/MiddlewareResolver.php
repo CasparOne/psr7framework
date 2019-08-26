@@ -1,6 +1,6 @@
 <?php
 
-namespace Framework\Http;
+namespace Framework\Http\Pipeline;
 
 use Psr\Http\Message\ServerRequestInterface;
 use function is_string;
@@ -11,13 +11,13 @@ use function is_string;
  */
 class MiddlewareResolver
 {
-    /**
-     * If @handler is't an object returns function which creates one
-     * @param $handler
-     * @return callable
-     */
+
     public function resolve($handler) : callable
     {
+        if (is_array($handler)) {
+            return  $this->createPipe($handler);
+        }
+
         if (is_string($handler)) {
             return function (ServerRequestInterface $request, callable $next) use ($handler) {
                 $object = new $handler();
@@ -25,5 +25,20 @@ class MiddlewareResolver
             };
         }
         return $handler;
+    }
+
+    /**
+     * @param array $handlers
+     * @return Pipeline
+     */
+    protected function createPipe(array $handlers) : Pipeline
+    {
+        $pipeline = new Pipeline();
+        foreach ($handlers as $handler) {
+            $pipeline->pipe($this->resolve($handler));
+        }
+
+        return $pipeline;
+
     }
 }
