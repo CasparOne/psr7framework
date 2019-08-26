@@ -6,9 +6,11 @@ use App\Http\Action\Blog\IndexAction;
 use App\Http\Action\Blog\ShowAction;
 use App\Http\Action\CabinetAction;
 use App\Http\Action\HelloAction;
+use App\Http\Middleware\BasicAuthMiddleware;
 use App\Http\Middleware\ProfilerMiddleware;
 use Aura\Router\RouterContainer;
 use Framework\Http\ActionResolver;
+use Framework\Http\Pipeline\Pipeline;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
 use Psr\Http\Message\ServerRequestInterface;
@@ -18,16 +20,14 @@ use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 
 require 'vendor/autoload.php';
 ### Initialization
-$params = [
-    'users' =>
-    [
-        'admin' => 'password',
-    ]
-];
-$auth = new App\Http\Middleware\BasicAuthMiddleware($params['users']);
-$profiler = new ProfilerMiddleware();
 $aura = new RouterContainer();
 $routes = $aura->getMap();
+$params = [
+    'users' => [
+        'admin' => 'password1',
+        'user'  => 'pass2'
+    ],
+];
 
 // Router initialization
 $router = new AuraRouterAdapter($aura);
@@ -35,12 +35,14 @@ $router = new AuraRouterAdapter($aura);
 $resolver = new ActionResolver();
 
 // Routes settings
-$routes->get('cabinet', '/cabinet', function (ServerRequestInterface $request) use ($auth, $profiler) {
-    $cabinet = new CabinetAction();
-    return $profiler($request, function (ServerRequestInterface $request) use ($auth, $cabinet) {
-        return $auth($request, function (ServerRequestInterface $request) use ($cabinet) {
-            return $cabinet($request);
-        });
+$routes->get('cabinet', '/cabinet', function (ServerRequestInterface $request) use ($params){
+    $pipeline = new Pipeline();
+    $pipeline->pipe(new BasicAuthMiddleware($params['users']));
+    $pipeline->pipe(new ProfilerMiddleware());
+    $pipeline->pipe(new CabinetAction());
+
+    return $pipeline($request, function () {
+        return new HtmlResponse('Undefined page', 404);
     });
 });
 
@@ -48,10 +50,9 @@ $routes->get('home', '/', HelloAction::class);
 
 $routes->get('about', '/about', AboutAction::class);
 
-$routes->get('blog', '/blog', IndexAction::class);
+$routes->get('/blog', '/blog', IndexAction::class);
 
-$routes->get('blog_show', '/blog/{id}', ShowAction::class)->tokens(['id' => '\d+']);
-
+$routes->get('/blog_show', '/blog/{id}', ShowAction::class)->tokens(['id' => '\d+']);
 
 ### Running
 //Initialization a new Request object
