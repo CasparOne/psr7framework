@@ -7,6 +7,7 @@ use App\Http\Action\Blog\ShowAction;
 use App\Http\Action\CabinetAction;
 use App\Http\Action\HelloAction;
 use App\Http\Middleware\BasicAuthMiddleware;
+use App\Http\Middleware\NotFoundHandler;
 use App\Http\Middleware\ProfilerMiddleware;
 use Aura\Router\RouterContainer;
 use Framework\Http\ActionResolver;
@@ -14,7 +15,6 @@ use Framework\Http\Pipeline\Pipeline;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 
@@ -42,7 +42,7 @@ $routes->get('cabinet', '/cabinet', function (ServerRequestInterface $request) u
     $pipeline->pipe(new CabinetAction());
 
     return $pipeline($request, function () {
-        return new HtmlResponse('Undefined page', 404);
+        return new NotFoundHandler();
     });
 });
 
@@ -72,7 +72,8 @@ try {
     // Init Response object to return it
     $response = $action($request);
 } catch (RequestNotMatchedException $exception) {
-    $response = new HtmlResponse('Undefined Page', 404);
+    $handler = new NotFoundHandler();
+    $response = $handler($request);
 }
 
 ### Postprocessing
