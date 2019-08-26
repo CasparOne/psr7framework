@@ -1,43 +1,43 @@
 <?php
 
-namespace App\Http\Action;
+namespace App\Http\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\EmptyResponse;
 
 /**
- * Class BasicAuthActionDecorator
- * @package App\Http\Action
+ * Class BasicAuthMiddleware
+ * @package App\Http\Middleware
  */
-class BasicAuthActionDecorator
+class BasicAuthMiddleware
 {
-    private $next;
+    public const ATTRIVUTE = '_user';
+
     private $users;
 
     /**
-     * BasicAuthActionDecorator constructor.
-     * @param callable $next
+     * BasicAuthMiddleware constructor.
      * @param array $users
      */
-    public function __construct(callable $next, array $users)
+    public function __construct(array $users)
     {
-        $this->next = $next;
         $this->users = $users;
     }
 
     /**
      * @param ServerRequestInterface $request
+     * @param callable $next
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request) : ResponseInterface
+    public function __invoke(ServerRequestInterface $request, callable $next) : ResponseInterface
     {
         $username = $request->getServerParams()['PHP_AUTH_USER'] ?? null;
         $password = $request->getServerParams()['PHP_AUTH_PW'] ?? null;
         if (!empty($username) && !empty($password)) {
             foreach ($this->users as $user => $pass) {
                 if ($username === $user && $password === $pass) {
-                    return ($this->next)($request->withAttribute('username', $username));
+                    return $next($request->withAttribute(self::ATTRIVUTE, $username));
                 }
             }
         }

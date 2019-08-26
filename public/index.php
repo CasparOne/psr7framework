@@ -2,7 +2,6 @@
 chdir(dirname(__DIR__));
 
 use App\Http\Action\AboutAction;
-use App\Http\Action\BasicAuthActionDecorator;
 use App\Http\Action\Blog\IndexAction;
 use App\Http\Action\Blog\ShowAction;
 use App\Http\Action\CabinetAction;
@@ -11,6 +10,7 @@ use Aura\Router\RouterContainer;
 use Framework\Http\ActionResolver;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
@@ -23,8 +23,9 @@ $params = [
     'users' => [
         'admin' => 'password2',
         'user'  => 'pass2'
-    ]
+    ],
 ];
+$auth = new App\Http\Middleware\BasicAuthMiddleware($params['users']);
 
 // Router initialization
 $router = new AuraRouterAdapter($aura);
@@ -32,9 +33,14 @@ $router = new AuraRouterAdapter($aura);
 $resolver = new ActionResolver();
 
 // Routes settings
-$routes->get('cabinet', '/cabinet', new BasicAuthActionDecorator(new CabinetAction(), $params['users']));
+$routes->get('cabinet', '/cabinet', function (ServerRequestInterface $request) use ($auth){
+    $cabinet = new CabinetAction();
+    return $auth($request, function (ServerRequestInterface $request) use ($cabinet) {
+        return $cabinet($request);
+    });
+});
 
-$routes->get('home', '/', new BasicAuthActionDecorator(new HelloAction(), $params['users']));
+$routes->get('home', '/', HelloAction::class);
 
 $routes->get('about', '/about', AboutAction::class);
 
