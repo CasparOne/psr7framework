@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Framework\Http;
+namespace Tests\Framework\Http\Pipeline;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -10,18 +10,16 @@ use Framework\Http\Pipeline\Pipeline;
 
 class PipelineTest extends TestCase
 {
-    public function testPipeline()
+    public function testPipe(): void
     {
         $pipeline = new Pipeline();
         $pipeline->pipe(new Middleware1());
         $pipeline->pipe(new Middleware2());
-
         $response = $pipeline(new ServerRequest(), new Last());
         $this->assertJsonStringEqualsJsonString(
-            json_encode(['middleware-1' => 1,'middleware-2' => 2,]),
+            json_encode(['middleware-1' => 1, 'middleware-2' => 2]),
             $response->getBody()->getContents()
         );
-
     }
 }
 
@@ -32,7 +30,6 @@ class Middleware1
         return $next($request->withAttribute('middleware-1', 1));
     }
 }
-
 class Middleware2
 {
     public function __invoke(ServerRequestInterface $request, callable $next)
@@ -40,10 +37,9 @@ class Middleware2
         return $next($request->withAttribute('middleware-2', 2));
     }
 }
-
 class Last
 {
-    public function __invoke(ServerRequestInterface $request, callable $next)
+    public function __invoke(ServerRequestInterface $request)
     {
         return new JsonResponse($request->getAttributes());
     }

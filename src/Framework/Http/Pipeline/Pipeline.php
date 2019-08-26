@@ -4,6 +4,7 @@ namespace Framework\Http\Pipeline;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use SplQueue;
 
 /**
  * Class Pipeline
@@ -11,14 +12,22 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class Pipeline
 {
-    private $middleware = [];
+    private $queue;
+
+    /**
+     * Pipeline constructor.
+     */
+    public function __construct()
+    {
+        $this->queue = new SplQueue();
+    }
 
     /**
      * @param callable $middleware
      */
     public function pipe(callable $middleware) : void
     {
-        $this->middleware[] = $middleware;
+        $this->queue->enqueue($middleware);
     }
 
     /**
@@ -28,22 +37,7 @@ class Pipeline
      */
     public function __invoke(ServerRequestInterface $request, callable $default) : ResponseInterface
     {
-        return $this->next($request, $default);
+        $delegate = new Next( clone $this->queue, $default);
+        return $delegate($request);
     }
-
-    /**
-     * @param ServerRequestInterface $request
-     * @param callable $default
-     * @return ResponseInterface
-     */
-    private function next(ServerRequestInterface $request, callable $default) : ResponseInterface
-    {
-        if (!$current = array_shift($this->middleware)) {
-            $default($request);
-        };
-        return $current($request, function (ServerRequestInterface $request) use ($default) {
-            return $this->next($request, $default);
-        });
-    }
-
 }

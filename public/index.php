@@ -24,7 +24,7 @@ $aura = new RouterContainer();
 $routes = $aura->getMap();
 $params = [
     'users' => [
-        'admin' => 'password',
+        'admin' => 'password1',
         'user'  => 'pass2'
     ],
 ];
