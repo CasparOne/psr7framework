@@ -10,11 +10,10 @@ use App\Http\Middleware\BasicAuthMiddleware;
 use App\Http\Middleware\NotFoundHandler;
 use App\Http\Middleware\ProfilerMiddleware;
 use Aura\Router\RouterContainer;
-use Framework\Http\ActionResolver;
+use Framework\Http\MiddlewareResolver;
 use Framework\Http\Pipeline\Pipeline;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
-use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 
@@ -24,27 +23,18 @@ $aura = new RouterContainer();
 $routes = $aura->getMap();
 $params = [
     'users' => [
-        'admin' => 'password1',
+        'admin' => 'password',
         'user'  => 'pass2'
     ],
 ];
 
-// Router initialization
-$router = new AuraRouterAdapter($aura);
-// Creating Resolver with some actions creation logic
-$resolver = new ActionResolver();
 
 // Routes settings
-$routes->get('cabinet', '/cabinet', function (ServerRequestInterface $request) use ($params){
-    $pipeline = new Pipeline();
-    $pipeline->pipe(new BasicAuthMiddleware($params['users']));
-    $pipeline->pipe(new ProfilerMiddleware());
-    $pipeline->pipe(new CabinetAction());
-
-    return $pipeline($request, function () {
-        return new NotFoundHandler();
-    });
-});
+$routes->get('cabinet', '/cabinet', [
+    ProfilerMiddleware::class,
+    new BasicAuthMiddleware($params['users']),
+    CabinetAction::class,
+]);
 
 $routes->get('home', '/', HelloAction::class);
 
@@ -54,10 +44,18 @@ $routes->get('/blog', '/blog', IndexAction::class);
 
 $routes->get('/blog_show', '/blog/{id}', ShowAction::class)->tokens(['id' => '\d+']);
 
-### Running
-//Initialization a new Request object
-$request = ServerRequestFactory::fromGlobals();
 
+// Router initialization
+$router = new AuraRouterAdapter($aura);
+// Creating Resolver with some actions creation logic
+$resolver = new MiddlewareResolver();
+//Initialization a new Request object
+$pipeline = new Pipeline();
+// Lazy load class Profiler (with closures)
+$pipeline->pipe($resolver->resolve(ProfilerMiddleware::class));
+
+### Running
+$request = ServerRequestFactory::fromGlobals();
 try {
     // Parsing current route
     $result = $router->match($request);
@@ -66,15 +64,14 @@ try {
         $request = $request->withAttribute($attribute, $value);
     }
     // Getting Handler name
-    $handler = $result->getHandler();
-    // Setting action
-    $action = $resolver->resolve($handler);
-    // Init Response object to return it
-    $response = $action($request);
-} catch (RequestNotMatchedException $exception) {
-    $handler = new NotFoundHandler();
-    $response = $handler($request);
-}
+    $handlers = $result->getHandler();
+    foreach (is_array($handlers) ? $handlers : [$handlers] as $handler) {
+        $pipeline->pipe($resolver->resolve($handler));
+    }
+} catch (RequestNotMatchedException $exception) {}
+
+$response = $pipeline($request, new NotFoundHandler());
+
 
 ### Postprocessing
 // Add some headers to response

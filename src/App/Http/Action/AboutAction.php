@@ -4,6 +4,7 @@
 namespace App\Http\Action;
 
 
+use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
 /**
@@ -12,7 +13,10 @@ use Zend\Diactoros\Response\HtmlResponse;
  */
 class AboutAction
 {
-    public function __invoke()
+    /**
+     * @return HtmlResponse
+     */
+    public function __invoke() : ResponseInterface
     {
         return new HtmlResponse('I am a Site. It\'s about section.' );
     }

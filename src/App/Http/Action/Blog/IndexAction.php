@@ -1,14 +1,20 @@
 <?php
 
-
 namespace App\Http\Action\Blog;
 
-
+use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
+/**
+ * Class IndexAction
+ * @package App\Http\Action\Blog
+ */
 class IndexAction
 {
-    public function __invoke()
+    /**
+     * @return JsonResponse
+     */
+    public function __invoke() : ResponseInterface
     {
         return new JsonResponse([
             ['id' => 3, 'Title' =>'The third Post'],
@@ -16,5 +22,4 @@ class IndexAction
             ['id' => 1, 'Title' =>'The first Post'],
         ]);
     }
-
 }

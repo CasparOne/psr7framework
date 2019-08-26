@@ -6,6 +6,10 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use SplQueue;
 
+/**
+ * Class Next
+ * @package Framework\Http\Pipeline
+ */
 class Next
 {
     /** @var callable $default  */
