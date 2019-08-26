@@ -2,6 +2,7 @@
 chdir(dirname(__DIR__));
 
 use App\Http\Action\AboutAction;
+use App\Http\Action\BasicAuthActionDecorator;
 use App\Http\Action\Blog\IndexAction;
 use App\Http\Action\Blog\ShowAction;
 use App\Http\Action\CabinetAction;
@@ -20,8 +21,8 @@ $aura = new RouterContainer();
 $routes = $aura->getMap();
 $params = [
     'users' => [
-        'admin' => 'password1',
-        'user'  => 'pass'
+        'admin' => 'password2',
+        'user'  => 'pass2'
     ]
 ];
 
@@ -31,9 +32,9 @@ $router = new AuraRouterAdapter($aura);
 $resolver = new ActionResolver();
 
 // Routes settings
-$routes->get('cabinet', '/cabinet', new CabinetAction($params['users']));
+$routes->get('cabinet', '/cabinet', new BasicAuthActionDecorator(new CabinetAction(), $params['users']));
 
-$routes->get('home', '/', HelloAction::class);
+$routes->get('home', '/', new BasicAuthActionDecorator(new HelloAction(), $params['users']));
 
 $routes->get('about', '/about', AboutAction::class);
 
