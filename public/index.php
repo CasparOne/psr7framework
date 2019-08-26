@@ -26,6 +26,7 @@ $params = [
     ],
 ];
 $auth = new App\Http\Middleware\BasicAuthMiddleware($params['users']);
+$profiler = new App\Http\Middleware\ProfilerMiddleware();
 
 // Router initialization
 $router = new AuraRouterAdapter($aura);
@@ -33,10 +34,12 @@ $router = new AuraRouterAdapter($aura);
 $resolver = new ActionResolver();
 
 // Routes settings
-$routes->get('cabinet', '/cabinet', function (ServerRequestInterface $request) use ($auth){
+$routes->get('cabinet', '/cabinet', function (ServerRequestInterface $request) use ($auth, $profiler){
     $cabinet = new CabinetAction();
-    return $auth($request, function (ServerRequestInterface $request) use ($cabinet) {
-        return $cabinet($request);
+    return $profiler($request, function (ServerRequestInterface $request) use ($auth, $cabinet) {
+        return $auth($request, function (ServerRequestInterface $request) use ($cabinet) {
+            return $cabinet($request);
+        });
     });
 });
 
