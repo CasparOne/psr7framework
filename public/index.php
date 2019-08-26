@@ -4,6 +4,7 @@ chdir(dirname(__DIR__));
 use App\Http\Action\AboutAction;
 use App\Http\Action\Blog\IndexAction;
 use App\Http\Action\Blog\ShowAction;
+use App\Http\Action\CabinetAction;
 use App\Http\Action\HelloAction;
 use Aura\Router\RouterContainer;
 use Framework\Http\ActionResolver;
@@ -17,6 +18,12 @@ require 'vendor/autoload.php';
 ### Initialization
 $aura = new RouterContainer();
 $routes = $aura->getMap();
+$params = [
+    'users' => [
+        'admin' => 'password1',
+        'user'  => 'pass'
+    ]
+];
 
 // Router initialization
 $router = new AuraRouterAdapter($aura);
@@ -24,6 +31,8 @@ $router = new AuraRouterAdapter($aura);
 $resolver = new ActionResolver();
 
 // Routes settings
+$routes->get('cabinet', '/cabinet', new CabinetAction($params['users']));
+
 $routes->get('home', '/', HelloAction::class);
 
 $routes->get('about', '/about', AboutAction::class);
