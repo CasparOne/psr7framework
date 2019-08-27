@@ -29,7 +29,7 @@ class Application extends Pipeline
     }
 
     /**
-     * @param callable $middleware
+     * @param mixed $middleware
      * @throws \ReflectionException
      */
     public function pipe($middleware): void

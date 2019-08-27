@@ -27,10 +27,11 @@ class BasicAuthMiddleware
 
     /**
      * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
      * @param callable $next
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, callable $next) : ResponseInterface
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
         $username = $request->getServerParams()['PHP_AUTH_USER'] ?? null;
         $password = $request->getServerParams()['PHP_AUTH_PW'] ?? null;
@@ -41,7 +42,9 @@ class BasicAuthMiddleware
                 }
             }
         }
-        return new EmptyResponse(401, ['WWW-Authenticate' => 'Basic realm=Manager panel']);
+        return $response
+            ->withStatus(401)
+            ->withHeader('WWW-Authenticate', 'Basic realm=Manager panel');
     }
 
 }

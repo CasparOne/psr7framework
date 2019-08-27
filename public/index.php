@@ -29,7 +29,7 @@ require 'vendor/autoload.php';
 $params = [
     'debug' => true,
     'users' => [
-        'admin' => 'password',
+        'admin' => 'password1',
         'user'  => 'pass2'
     ],
 ];
