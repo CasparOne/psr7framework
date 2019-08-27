@@ -13,6 +13,7 @@ use App\Http\Middleware\NotFoundHandler;
 use App\Http\Middleware\ProfilerMiddleware;
 use Aura\Router\RouterContainer;
 use Framework\Http\Application;
+use Framework\Http\Middleware\DispatchMiddleware;
 use Framework\Http\Middleware\RouteMiddleware;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\AuraRouterAdapter;
@@ -66,29 +67,16 @@ $app->pipe(new ErrorHandlerMiddleware($params['debug']));
 $app->pipe(CredentialsMiddleware::class);
 // Lazy load class Profiler (with closures)
 $app->pipe($resolver->resolve(ProfilerMiddleware::class));
-// Initialization main app
-$app->pipe(new RouteMiddleware($router, $resolver));
-
+// Initialization Route middleware
+$app->pipe(new RouteMiddleware($router));
+// Initialization Dispatch middleware
+$app->pipe(new DispatchMiddleware($resolver));
 
 
 ### Running
 $request = ServerRequestFactory::fromGlobals();
-try {
-    // Parsing current route
-    $result = $router->match($request);
-    // Getting Attributes from parsing result and setting up the Request
-    foreach ($result->getAttribute() as $attribute => $value) {
-        $request = $request->withAttribute($attribute, $value);
-    }
-    // Getting Handler name
-    $app->pipe($result->getHandler());
-} catch (RequestNotMatchedException $exception) {}
-
 $response = $app->run($request);
 
-
-
-### Postprocessing
 
 ### Sending
 

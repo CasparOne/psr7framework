@@ -2,8 +2,8 @@
 
 namespace Framework\Http\Middleware;
 
-use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
+use Framework\Http\Router\Result;
 use Framework\Http\Router\RouterInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -14,17 +14,14 @@ use Psr\Http\Message\ServerRequestInterface;
 class RouteMiddleware
 {
     private $router;
-    private $resolver;
 
     /**
      * RouteMiddleware constructor.
      * @param RouterInterface $router
-     * @param MiddlewareResolver $resolver
      */
-    public function __construct(RouterInterface $router, MiddlewareResolver $resolver)
+    public function __construct(RouterInterface $router)
     {
         $this->router = $router;
-        $this->resolver = $resolver;
     }
 
     /**
@@ -39,8 +36,7 @@ class RouteMiddleware
             foreach ($result->getAttribute() as $attribute => $value) {
                 $request = $request->withAttribute($attribute, $value);
             }
-            $middleware = $this->resolver->resolve($result->getHandler());
-            return $middleware($request, $next);
+            return $next($request->withAttribute(Result::class, $result));
         } catch (RequestNotMatchedException $exception) {
             return $next($request);
         }
