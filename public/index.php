@@ -17,16 +17,15 @@ use Framework\Http\Middleware\DispatchMiddleware;
 use Framework\Http\Middleware\RouteMiddleware;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\AuraRouterAdapter;
-use Framework\Http\Router\Exception\RequestNotMatchedException;
+use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 
 require 'vendor/autoload.php';
+
 ###############################################
 # Initialization
 ###############################################
-$aura = new RouterContainer();
-$routes = $aura->getMap();
 $params = [
     'debug' => true,
     'users' => [
@@ -34,51 +33,37 @@ $params = [
         'user'  => 'pass2'
     ],
 ];
+$aura = new RouterContainer();
+$routes = $aura->getMap();
 
 
-// Routes settings
-$routes->get('cabinet', '/cabinet',
-    [
-    ProfilerMiddleware::class,
+$routes->get('home', '/', HelloAction::class);
+$routes->get('about', '/about', AboutAction::class);
+$routes->get('cabinet', '/cabinet', [
     new BasicAuthMiddleware($params['users']),
     CabinetAction::class,
 ]);
-
-$routes->get('home', '/', HelloAction::class);
-
-$routes->get('about', '/about', AboutAction::class);
-
-$routes->get('/blog', '/blog', IndexAction::class);
-
-$routes->get('/blog_show', '/blog/{id}', ShowAction::class)->tokens(['id' => '\d+']);
+$routes->get('blog', '/blog', IndexAction::class);
+$routes->get('blog_show', '/blog/{id}', ShowAction::class)->tokens(['id' => '\d+']);
 
 
-// Router initialization
 $router = new AuraRouterAdapter($aura);
-// Resolver initialization
+
 $resolver = new MiddlewareResolver();
-// App initialization
 $app = new Application($resolver, new NotFoundHandler());
 
 
-// Error handler middleware
 $app->pipe(new ErrorHandlerMiddleware($params['debug']));
-// Add some headers to response
 $app->pipe(CredentialsMiddleware::class);
-// Lazy load class Profiler (with closures)
-$app->pipe($resolver->resolve(ProfilerMiddleware::class));
-// Initialization Route middleware
+$app->pipe(ProfilerMiddleware::class);
 $app->pipe(new RouteMiddleware($router));
-// Initialization Dispatch middleware
 $app->pipe(new DispatchMiddleware($resolver));
 
 
 ### Running
 $request = ServerRequestFactory::fromGlobals();
-$response = $app->run($request);
-
+$response = $app->run($request, new Response());
 
 ### Sending
-
 $emitter = new SapiEmitter();
 $emitter->emit($response);

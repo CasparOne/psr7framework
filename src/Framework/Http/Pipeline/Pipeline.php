@@ -23,21 +23,22 @@ class Pipeline
     }
 
     /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param callable $next
+     * @return ResponseInterface
+     */
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next) : ResponseInterface
+    {
+        $delegate = new Next( clone $this->queue, $next);
+        return $delegate($request, $response);
+    }
+
+    /**
      * @param callable $middleware
      */
     public function pipe($middleware) : void
     {
         $this->queue->enqueue($middleware);
-    }
-
-    /**
-     * @param ServerRequestInterface $request
-     * @param callable $default
-     * @return ResponseInterface
-     */
-    public function __invoke(ServerRequestInterface $request, callable $default) : ResponseInterface
-    {
-        $delegate = new Next( clone $this->queue, $default);
-        return $delegate($request);
     }
 }
