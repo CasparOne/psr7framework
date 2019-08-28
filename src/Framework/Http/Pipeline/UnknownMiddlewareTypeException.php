@@ -18,5 +18,4 @@ class UnknownMiddlewareTypeException extends InvalidArgumentException
     {
         return $this->type;
     }
-
 }

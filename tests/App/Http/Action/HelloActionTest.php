@@ -3,7 +3,6 @@
 
 namespace Tests\App\Http\Action;
 
-
 use App\Http\Action\HelloAction;
 use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\ServerRequest;
@@ -33,5 +32,4 @@ class HelloActionTest extends TestCase
         self::assertEquals(200, $response->getStatusCode());
         self::assertEquals('Hello, John!', $response->getBody()->getContents());
     }
-
 }

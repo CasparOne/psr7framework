@@ -1,7 +1,9 @@
 <?php
 namespace Tests\App\Http\Action\Blog;
+
 use App\Http\Action\Blog\IndexAction;
 use PHPUnit\Framework\TestCase;
+
 class IndexActionTest extends TestCase
 {
     public function testSuccess()

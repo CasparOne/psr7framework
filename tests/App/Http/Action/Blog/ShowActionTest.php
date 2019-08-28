@@ -1,9 +1,11 @@
 <?php
 namespace Tests\App\Http\Action\Blog;
+
 use App\Http\Action\Blog\ShowAction;
 use App\Http\Middleware\NotFoundHandler;
 use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\ServerRequest;
+
 class ShowActionTest extends TestCase
 {
     public function testSuccess()

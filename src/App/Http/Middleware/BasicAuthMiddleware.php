@@ -46,5 +46,4 @@ class BasicAuthMiddleware
             ->withStatus(401)
             ->withHeader('WWW-Authenticate', 'Basic realm=Manager panel');
     }
-
 }

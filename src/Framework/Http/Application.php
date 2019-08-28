@@ -48,7 +48,4 @@ class Application extends MiddlewarePipe
     {
         return $this($request, $response, $this->defaultHandler);
     }
-
-
-
 }

@@ -44,7 +44,8 @@ class RouteMiddleware implements MiddlewareInterface
                 $request = $request->withAttribute($attribute, $value);
             }
             $request = $request->withAttribute(Result::class, $result);
-        } catch (RequestNotMatchedException $exception) {}
+        } catch (RequestNotMatchedException $exception) {
+        }
         return $handler->handle($request);
     }
 }

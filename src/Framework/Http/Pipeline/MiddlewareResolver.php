@@ -7,7 +7,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Stratigility\MiddlewarePipe;
 
-
 /**
  * Class MiddlewareResolver
  * @package Framework\Http
@@ -62,7 +61,7 @@ class MiddlewareResolver
      * @return MiddlewarePipe
      * @throws \ReflectionException
      */
-    protected function createPipe(array $handlers,  $responsePrototype) : MiddlewarePipe
+    protected function createPipe(array $handlers, $responsePrototype) : MiddlewarePipe
     {
         $pipeline = new MiddlewarePipe();
         $pipeline->setResponsePrototype($responsePrototype);

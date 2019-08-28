@@ -22,5 +22,4 @@ class HelloAction
 
         return new HtmlResponse('Hello, ' . $name . '!');
     }
-
 }
