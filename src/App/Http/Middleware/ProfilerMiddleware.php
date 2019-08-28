@@ -13,6 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class ProfilerMiddleware implements MiddlewareInterface
 {
+    const HEADER = 'X-Response-Time';
     /**
      * Process an incoming server request and return a response, optionally delegating
      * response creation to a handler.
@@ -22,12 +23,16 @@ class ProfilerMiddleware implements MiddlewareInterface
      *
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $start = microtime(true);
+        $server = $request->getServerParams();
+        $startTime = $server['REQUEST_TIME_FLOAT'] ?? microtime(true);
         $response = $handler->handle($request);
-        $stop = microtime(true);
 
-        return $response->withHeader('X-Profiler-Time', $stop - $start);
+        return $response->withHeader(self::HEADER, sprintf('%2.3fms', (microtime(true) - $startTime) * 1000));
     }
 }
+
+
+
+
