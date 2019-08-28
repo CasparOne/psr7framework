@@ -52,7 +52,6 @@ $app->pipe(new ErrorHandlerMiddleware($params['debug']));
 $app->pipe(CredentialsMiddleware::class);
 $app->pipe(ProfilerMiddleware::class);
 $app->pipe(new RouteMiddleware($router));
-
 $app->pipe('cabinet', new BasicAuthMiddleware($params['users']));
 $app->pipe(new DispatchMiddleware($resolver));
 
