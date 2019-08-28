@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\EmptyResponse;
 
 /**
  * Class BasicAuthMiddleware
@@ -35,6 +34,7 @@ class BasicAuthMiddleware
     {
         $username = $request->getServerParams()['PHP_AUTH_USER'] ?? null;
         $password = $request->getServerParams()['PHP_AUTH_PW'] ?? null;
+
         if (!empty($username) && !empty($password)) {
             foreach ($this->users as $user => $pass) {
                 if ($username === $user && $password === $pass) {

@@ -21,10 +21,6 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
         $this->debug = $debug;
     }
 
-    public function __invoke(ServerRequestInterface $request, callable $next)
-    {
-    }
-
     /**
      * Process an incoming server request and return a response, optionally delegating
      * response creation to a handler.
