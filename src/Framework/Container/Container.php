@@ -27,7 +27,7 @@ class Container
         }
         $definition = $this->definitions[$id];
         // Check if $definition is a instance of \Closure
-        $this->results[$id] = $definition instanceof \Closure ? $definition() : $definition;
+        $this->results[$id] = $definition instanceof \Closure ? $definition($this) : $definition;
         return $this->results[$id];
     }
 

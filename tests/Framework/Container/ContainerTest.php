@@ -56,4 +56,19 @@ class ContainerTest extends TestCase
 
         $container->get('email');
     }
+
+    public function testContainerPass() : void
+    {
+        $container = new Container();
+        $container->set('param', $value = 15);
+        $container->set($id = 'name', function (Container $c) {
+            $object = new \stdClass();
+            $object->param = $c->get('param');
+            return $object;
+        });
+
+        self::assertObjectHasAttribute('param', $object = $container->get($id));
+        self::assertEquals($value, $object->param);
+    }
+
 }

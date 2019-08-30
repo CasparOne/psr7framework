@@ -31,8 +31,15 @@ require 'vendor/autoload.php';
 $container = new Container();
 $container->set('debug', true);
 $container->set('users', ['admin' => 'password']);
-$container->set('db', function () {
-    return new \PDO('mysql:localhost;dbname=db', 'username', 'password');
+$container->set('dsn', 'mysql:localhost;dbname=db');
+$container->set('username', 'username');
+$container->set('password', 'secret');
+$container->set('db', function (Container $c) {
+    return new \PDO(
+        $c->get('dsn'),
+        $c->get('username'),
+        $c->get('password')
+    );
 });
 
 $db = $container->get('db');
