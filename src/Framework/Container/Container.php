@@ -9,6 +9,7 @@ namespace Framework\Container;
 class Container
 {
     private $definitions = [];
+    private $results = [];
 
     /**
      * Get parameters from container
@@ -18,13 +19,16 @@ class Container
      */
     public function get($id)
     {
+        if (array_key_exists($id, $this->results)) {
+            return $this->results[$id];
+        }
         if (!array_key_exists($id, $this->definitions)) {
             throw new ServiceNotFoundException('Undefined parameter "' . $id . '"');
         }
         $definition = $this->definitions[$id];
-
-        // Check if $definition is a instance of \Closure then run this function
-        return $definition instanceof \Closure ? $definition() : $definition;
+        // Check if $definition is a instance of \Closure
+        $this->results[$id] = $definition instanceof \Closure ? $definition() : $definition;
+        return $this->results[$id];
     }
 
     /**
@@ -35,6 +39,9 @@ class Container
      */
     public function set($id, $value)
     {
+        if (array_key_exists($id, $this->results)) {
+            unset($this->results[$id]);
+        }
         $this->definitions[$id] = $value;
     }
 }
