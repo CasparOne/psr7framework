@@ -12,6 +12,7 @@ use App\Http\Middleware\ErrorHandlerMiddleware;
 use App\Http\Middleware\NotFoundHandler;
 use App\Http\Middleware\ProfilerMiddleware;
 use Aura\Router\RouterContainer;
+use Framework\Container\Container;
 use Framework\Http\Application;
 use Framework\Http\Middleware\DispatchMiddleware;
 use Framework\Http\Middleware\RouteMiddleware;
@@ -24,15 +25,22 @@ use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 require 'vendor/autoload.php';
 
 ###############################################
+# Config
+###############################################
+
+$container = new Container();
+$container->set('debug', true);
+$container->set('users', ['admin' => 'password']);
+$container->set('db', function () {
+    return new \PDO('mysql:localhost;dbname=db', 'username', 'password');
+});
+
+$db = $container->get('db');
+
+###############################################
 # Initialization
 ###############################################
-$params = [
-    'debug' => true,
-    'users' => [
-        'admin' => 'password',
-        'user'  => 'pass2'
-    ],
-];
+
 $aura = new RouterContainer();
 $routes = $aura->getMap();
 
@@ -48,11 +56,11 @@ $router = new AuraRouterAdapter($aura);
 $resolver = new MiddlewareResolver();
 $app = new Application($resolver, new NotFoundHandler(), new Response());
 
-$app->pipe(new ErrorHandlerMiddleware($params['debug']));
+$app->pipe(new ErrorHandlerMiddleware($container->get('debug')));
 $app->pipe(CredentialsMiddleware::class);
 $app->pipe(ProfilerMiddleware::class);
 $app->pipe(new RouteMiddleware($router));
-$app->pipe('cabinet', new BasicAuthMiddleware($params['users']));
+$app->pipe('cabinet', new BasicAuthMiddleware($container->get('users')));
 $app->pipe(new DispatchMiddleware($resolver));
 
 ### Running
