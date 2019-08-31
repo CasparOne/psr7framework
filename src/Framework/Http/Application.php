@@ -3,6 +3,7 @@
 namespace Framework\Http;
 
 use Framework\Http\Pipeline\MiddlewareResolver;
+use Framework\Http\Router\RouterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Stratigility\MiddlewarePipe;
@@ -15,19 +16,25 @@ class Application extends MiddlewarePipe
 {
     private $resolver;
     private $defaultHandler;
+    /**
+     * @var RouterInterface
+     */
+    private $router;
 
     /**
      * Application constructor.
      * @param MiddlewareResolver $resolver
+     * @param RouterInterface $router
      * @param callable $defaultHandler
      * @param ResponseInterface $responsePrototype
      */
-    public function __construct(MiddlewareResolver $resolver, callable $defaultHandler, ResponseInterface $responsePrototype)
+    public function __construct(MiddlewareResolver $resolver, RouterInterface $router, callable $defaultHandler, ResponseInterface $responsePrototype)
     {
         parent::__construct();
         $this->resolver = $resolver;
         $this->setResponsePrototype($responsePrototype);
         $this->defaultHandler = $defaultHandler;
+        $this->router = $router;
     }
 
     /**
@@ -47,5 +54,25 @@ class Application extends MiddlewarePipe
     public function run(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
     {
         return $this($request, $response, $this->defaultHandler);
+    }
+
+    public function route($name, $path, $handler, array $options =[]) : void
+    {
+        $this->router->addRoute($name, $path, $handler, [], $options);
+    }
+
+    public function any($name, $path, $handler, array $options =[]) : void
+    {
+        $this->router->addRoute($name, $path, $handler, [], $options);
+    }
+
+    public function get($name, $path, $handler, array $options =[]) : void
+    {
+        $this->router->addRoute($name, $path, $handler, ['GET'], $options);
+    }
+
+    public function post($name, $path, $handler, array $options =[]) : void
+    {
+        $this->router->addRoute($name, $path, $handler, ['POST'], $options);
     }
 }

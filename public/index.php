@@ -41,6 +41,7 @@ $container->set('config', [
 $container->set(Application::class, function (Container $c) {
     return new Application(
         $c->get(MiddlewareResolver::class),
+        $c->get(RouterInterface::class),
         new NotFoundHandler(),
         new Response()
     );
@@ -71,14 +72,7 @@ $container->set(DispatchMiddleware::class, function (Container $c) {
 $container->set(
     RouterInterface::class,
     function () {
-        $aura = new RouterContainer();
-        $routes = $aura->getMap();
-        $routes->get('home', '/', HelloAction::class);
-        $routes->get('about', '/about', AboutAction::class);
-        $routes->get('cabinet', '/cabinet', CabinetAction::class);
-        $routes->get('blog', '/blog', IndexAction::class);
-        $routes->get('blog_show', '/blog/{id}', ShowAction::class)->tokens(['id' => '\d+']);
-        return new AuraRouterAdapter($aura);
+        return new AuraRouterAdapter(new RouterContainer());
     }
 );
 
@@ -95,6 +89,12 @@ $app->pipe(ProfilerMiddleware::class);
 $app->pipe($container->get(RouteMiddleware::class));
 $app->pipe('cabinet', $container->get(BasicAuthMiddleware::class));
 $app->pipe($container->get(DispatchMiddleware::class));
+
+$app->get('home', '/', HelloAction::class);
+$app->get('about', '/about', AboutAction::class);
+$app->get('cabinet', '/cabinet', CabinetAction::class);
+$app->get('blog', '/blog', IndexAction::class);
+$app->get('blog_show', '/blog/{id}', ShowAction::class, ['tokens' => ['id' => '\d+']]);
 
 ### Running
 $request = ServerRequestFactory::fromGlobals();
