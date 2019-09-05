@@ -79,7 +79,7 @@ class Container implements \ArrayAccess
      *                      The offset to retrieve.
      *                      </p>
      *
-     * @return mixed Can return all value types.
+     * @return mixed can return all value types
      *
      * @since 5.0.0
      */
@@ -100,8 +100,6 @@ class Container implements \ArrayAccess
      *                      The value to set.
      *                      </p>
      *
-     * @return void
-     *
      * @since 5.0.0
      */
     public function offsetSet($offset, $value): void
@@ -118,12 +116,20 @@ class Container implements \ArrayAccess
      *                      The offset to unset.
      *                      </p>
      *
-     * @return void
-     *
      * @since 5.0.0
      */
     public function offsetUnset($offset): void
     {
         unset($this->definitions[$offset]);
+    }
+
+    /**
+     * @param $id
+     *
+     * @return bool
+     */
+    public function has($id): bool
+    {
+        return key_exists($id, $this->definitions) || class_exists($id);
     }
 }
