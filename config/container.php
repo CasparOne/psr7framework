@@ -3,14 +3,9 @@
 use Framework\Container\Container;
 
 //##############################################
-// Config
+// Container initialization
 //##############################################
-$container = new Container();
+$container = new Container(require __DIR__.'/dependencies.php');
 $container->set('config', require __DIR__.'/../config/parameters.php');
-
-//###############################################
-// Application Init
-//###############################################
-require __DIR__.'/../config/dependencies.php';
 
 return $container;

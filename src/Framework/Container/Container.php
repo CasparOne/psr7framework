@@ -10,6 +10,11 @@ class Container implements \ArrayAccess
     private $definitions = [];
     private $results = [];
 
+    public function __construct(array $dependencies)
+    {
+        $this->definitions = $dependencies;
+    }
+
     /**
      * Get parameters from container with auto wiring.
      *

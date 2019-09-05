@@ -1,48 +1,27 @@
 <?php
+return [
+    Framework\Http\Application::class => function (Framework\Container\Container $c) {
+        return new Framework\Http\Application(
+            $c->get(Framework\Http\Pipeline\MiddlewareResolver::class),
+            $c->get(Framework\Http\Router\RouterInterface::class),
+            new App\Http\Middleware\NotFoundHandler(),
+            new Zend\Diactoros\Response()
+        );
+    },
+    App\Http\Middleware\BasicAuthMiddleware::class => function (Framework\Container\Container $c) {
+        return new App\Http\Middleware\BasicAuthMiddleware($c->get('config')['users']);
+    },
 
-use App\Http\Action\AboutAction;
-use App\Http\Action\Blog\IndexAction;
-use App\Http\Action\Blog\ShowAction;
-use App\Http\Action\CabinetAction;
-use App\Http\Action\HelloAction;
-use App\Http\Middleware\BasicAuthMiddleware;
-use App\Http\Middleware\CredentialsMiddleware;
-use App\Http\Middleware\ErrorHandlerMiddleware;
-use App\Http\Middleware\NotFoundHandler;
-use App\Http\Middleware\ProfilerMiddleware;
-use Aura\Router\RouterContainer;
-use Framework\Container\Container;
-use Framework\Http\Application;
-use Framework\Http\Middleware\DispatchMiddleware;
-use Framework\Http\Middleware\RouteMiddleware;
-use Framework\Http\Pipeline\MiddlewareResolver;
-use Framework\Http\Router\AuraRouterAdapter;
-use Framework\Http\Router\RouterInterface;
-use Zend\Diactoros\Response;
+    App\Http\Middleware\ErrorHandlerMiddleware::class => function (Framework\Container\Container $c) {
+        return new App\Http\Middleware\ErrorHandlerMiddleware($c->get('config')['debug']);
+    },
 
-$container->set(Application::class, function (Container $c) {
-    return new Application(
-        $c->get(MiddlewareResolver::class),
-        $c->get(RouterInterface::class),
-        new NotFoundHandler(),
-        new Response()
-    );
-});
+    Framework\Http\Pipeline\MiddlewareResolver::class => function (Framework\Container\Container $c) {
+        return new Framework\Http\Pipeline\MiddlewareResolver($c);
+    },
 
-//###############################################
-// Services
-//###############################################
-// Middleware
-$container->set(BasicAuthMiddleware::class, function (Container $c) {
-    return new BasicAuthMiddleware($c->get('config')['users']);
-});
-$container->set(ErrorHandlerMiddleware::class, function (Container $c) {
-    return new ErrorHandlerMiddleware($c->get('config')['debug']);
-});
-$container->set(MiddlewareResolver::class, function (Container $c) {
-    return new MiddlewareResolver($c);
-});
-$container->set(RouterInterface::class, function () {
-    return new AuraRouterAdapter(new RouterContainer());
-});
+    Framework\Http\Router\RouterInterface::class => function () {
+        return new Framework\Http\Router\AuraRouterAdapter(new Aura\Router\RouterContainer());
+    },
 
+];
