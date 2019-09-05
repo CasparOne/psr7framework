@@ -2,8 +2,9 @@
 
 namespace Framework\Http\Pipeline;
 
-use Framework\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Interop\Http\Server\MiddlewareInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Stratigility\MiddlewarePipe;
@@ -20,6 +21,7 @@ class MiddlewareResolver
 
     /**
      * MiddlewareResolver constructor.
+     *
      * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
@@ -33,6 +35,7 @@ class MiddlewareResolver
      *
      * @return callable
      *
+     * @throws NotFoundExceptionInterface
      * @throws \ReflectionException
      */
     public function resolve($handler, ResponseInterface $responsePrototype): callable

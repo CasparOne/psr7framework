@@ -5,7 +5,7 @@ namespace Framework\Container;
 /**
  * Class Container.
  */
-class Container implements \ArrayAccess, ContainerInterface
+class Container implements \ArrayAccess, \Psr\Container\ContainerInterface
 {
     private $definitions = [];
     private $results = [];
