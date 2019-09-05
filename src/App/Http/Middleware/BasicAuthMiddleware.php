@@ -6,8 +6,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class BasicAuthMiddleware
- * @package App\Http\Middleware
+ * Class BasicAuthMiddleware.
  */
 class BasicAuthMiddleware
 {
@@ -17,6 +16,7 @@ class BasicAuthMiddleware
 
     /**
      * BasicAuthMiddleware constructor.
+     *
      * @param array $users
      */
     public function __construct(array $users)
@@ -26,8 +26,9 @@ class BasicAuthMiddleware
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param callable $next
+     * @param ResponseInterface      $response
+     * @param callable               $next
+     *
      * @return ResponseInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
@@ -42,6 +43,7 @@ class BasicAuthMiddleware
                 }
             }
         }
+
         return $response
             ->withStatus(401)
             ->withHeader('WWW-Authenticate', 'Basic realm=Manager panel');

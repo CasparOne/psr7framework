@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class ContainerTest extends TestCase
 {
-    public function testPrimitives() : void
+    public function testPrimitives(): void
     {
         $container = new Container();
         $container->set($id = 'name', $value = 5);
@@ -24,7 +24,7 @@ class ContainerTest extends TestCase
         self::assertEquals($value, $container->get($id));
     }
 
-    public function testCallback() : void
+    public function testCallback(): void
     {
         $container = new Container();
         $container->set($id = 'name', function () {
@@ -35,7 +35,7 @@ class ContainerTest extends TestCase
         self::assertInstanceOf(\stdClass::class, $value);
     }
 
-    public function testSingleton() : void
+    public function testSingleton(): void
     {
         $container = new Container();
 
@@ -48,27 +48,27 @@ class ContainerTest extends TestCase
         self::assertSame($value1, $value2);
     }
 
-    public function testNotFound() : void
+    public function testNotFound(): void
     {
-        $container = new Container;
+        $container = new Container();
 
         $this->expectException(ServiceNotFoundException::class);
 
         $container->get('email');
     }
 
-    public function testContainerPass() : void
+    public function testContainerPass(): void
     {
         $container = new Container();
         $container->set('param', $value = 15);
         $container->set($id = 'name', function (Container $c) {
             $object = new \stdClass();
             $object->param = $c->get('param');
+
             return $object;
         });
 
         self::assertObjectHasAttribute('param', $object = $container->get($id));
         self::assertEquals($value, $object->param);
     }
-
 }

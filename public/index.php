@@ -1,4 +1,5 @@
 <?php
+
 chdir(dirname(__DIR__));
 
 use App\Http\Action\AboutAction;
@@ -25,19 +26,19 @@ use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 
 require 'vendor/autoload.php';
 
-###############################################
-# Config
-###############################################
+//##############################################
+// Config
+//##############################################
 
 $container = new Container();
 $container->set('config', [
     'debug' => true,
-    'users' => ['admin' => 'password']
+    'users' => ['admin' => 'password'],
 ]);
 
-################################################
-# Application Init
-################################################
+//###############################################
+// Application Init
+//###############################################
 $container->set(Application::class, function (Container $c) {
     return new Application(
         $c->get(MiddlewareResolver::class),
@@ -47,9 +48,9 @@ $container->set(Application::class, function (Container $c) {
     );
 });
 
-################################################
-# Services
-################################################
+//###############################################
+// Services
+//###############################################
 // Middleware
 $container->set(BasicAuthMiddleware::class, function (Container $c) {
     return new BasicAuthMiddleware($c->get('config')['users']);
@@ -76,10 +77,9 @@ $container->set(
     }
 );
 
-
-###############################################
-# Initialization
-###############################################
+//##############################################
+// Initialization
+//##############################################
 /** @var Application $app */
 $app = $container->get(Application::class);
 
@@ -96,10 +96,10 @@ $app->get('cabinet', '/cabinet', CabinetAction::class);
 $app->get('blog', '/blog', IndexAction::class);
 $app->get('blog_show', '/blog/{id}', ShowAction::class, ['tokens' => ['id' => '\d+']]);
 
-### Running
+//## Running
 $request = ServerRequestFactory::fromGlobals();
 $response = $app->run($request, new Response());
 
-### Sending
+//## Sending
 $emitter = new SapiEmitter();
 $emitter->emit($response);

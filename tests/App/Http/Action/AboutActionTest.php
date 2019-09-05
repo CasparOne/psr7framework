@@ -5,6 +5,7 @@ namespace Tests\App\Http\Action;
 
 use App\Http\Action\AboutAction;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
 use Zend\Diactoros\ServerRequest;
 
 class AboutActionTest extends TestCase

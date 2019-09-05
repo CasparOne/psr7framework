@@ -11,8 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class RouteMiddleware
- * @package Framework\Http\Middleware
+ * Class RouteMiddleware.
  */
 class RouteMiddleware implements MiddlewareInterface
 {
@@ -20,6 +19,7 @@ class RouteMiddleware implements MiddlewareInterface
 
     /**
      * RouteMiddleware constructor.
+     *
      * @param RouterInterface $router
      */
     public function __construct(RouterInterface $router)
@@ -31,7 +31,7 @@ class RouteMiddleware implements MiddlewareInterface
      * Process an incoming server request and return a response, optionally delegating
      * response creation to a handler.
      *
-     * @param ServerRequestInterface $request
+     * @param ServerRequestInterface  $request
      * @param RequestHandlerInterface $handler
      *
      * @return ResponseInterface
@@ -46,6 +46,7 @@ class RouteMiddleware implements MiddlewareInterface
             $request = $request->withAttribute(Result::class, $result);
         } catch (RequestNotMatchedException $exception) {
         }
+
         return $handler->handle($request);
     }
 }

@@ -10,8 +10,7 @@ use Framework\Http\Router\Exception\RouteNotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class AuraRouterAdapter
- * @package Framework\Http\Router
+ * Class AuraRouterAdapter.
  */
 class AuraRouterAdapter implements RouterInterface
 {
@@ -19,6 +18,7 @@ class AuraRouterAdapter implements RouterInterface
 
     /**
      * AuraRouterAdapter constructor.
+     *
      * @param RouterContainer $aura
      */
     public function __construct(RouterContainer $aura)
@@ -28,10 +28,12 @@ class AuraRouterAdapter implements RouterInterface
 
     /**
      * @param ServerRequestInterface $request
+     *
      * @throws RequestNotMatchedException
+     *
      * @return Result
      */
-    public function match(ServerRequestInterface $request) : Result
+    public function match(ServerRequestInterface $request): Result
     {
         $matcher = $this->aura->getMatcher();
         if ($route = $matcher->match($request)) {
@@ -44,7 +46,9 @@ class AuraRouterAdapter implements RouterInterface
     /**
      * @param $name
      * @param array $params
+     *
      * @return string
+     *
      * @throws RouteNotFoundException
      */
     public function generate($name, array $params = []): string
@@ -76,7 +80,7 @@ class AuraRouterAdapter implements RouterInterface
                     $route->wildcard($value);
                     break;
                 default:
-                    throw new \InvalidArgumentException('Undefined option "' . $name . '"');
+                    throw new \InvalidArgumentException('Undefined option "'.$name.'"');
             }
         }
 

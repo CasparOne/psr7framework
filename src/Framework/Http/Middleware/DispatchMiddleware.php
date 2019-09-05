@@ -8,8 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class DispatchMiddleware
- * @package Framework\Http\Middleware
+ * Class DispatchMiddleware.
  */
 class DispatchMiddleware
 {
@@ -17,6 +16,7 @@ class DispatchMiddleware
 
     /**
      * DispatchMiddleware constructor.
+     *
      * @param MiddlewareResolver $resolver
      */
     public function __construct(MiddlewareResolver $resolver)
@@ -26,9 +26,11 @@ class DispatchMiddleware
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param callable $next
+     * @param ResponseInterface      $response
+     * @param callable               $next
+     *
      * @return mixed
+     *
      * @throws \ReflectionException
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
@@ -38,6 +40,7 @@ class DispatchMiddleware
             return $next($request);
         }
         $middleware = $this->resolver->resolve($result->getHandler(), $response);
+
         return $middleware($request, $response, $next);
     }
 }

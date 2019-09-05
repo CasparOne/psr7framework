@@ -7,16 +7,16 @@ use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
 /**
- * Class NotFoundHandler
- * @package App\Http\Middleware
+ * Class NotFoundHandler.
  */
 class NotFoundHandler
 {
     /**
      * @param ServerRequestInterface $request
+     *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request) : ResponseInterface
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         return new HtmlResponse('Undefined page', 404);
     }

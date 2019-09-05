@@ -1,11 +1,9 @@
 <?php
 
-
 namespace Framework\Http\Router;
 
 /**
- * Class Result
- * @package Framework\Http\Router
+ * Class Result.
  */
 class Result
 {
@@ -15,9 +13,10 @@ class Result
 
     /**
      * Result constructor.
+     *
      * @param string $name
-     * @param mixed $handler
-     * @param array $attributes
+     * @param mixed  $handler
+     * @param array  $attributes
      */
     public function __construct($name, $handler, array $attributes)
     {
@@ -29,7 +28,7 @@ class Result
     /**
      * @return string
      */
-    public function getName() : string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -45,7 +44,7 @@ class Result
     /**
      * @return array
      */
-    public function getAttribute() : array
+    public function getAttribute(): array
     {
         return $this->attributes;
     }

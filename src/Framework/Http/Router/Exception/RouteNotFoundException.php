@@ -5,8 +5,7 @@ namespace Framework\Http\Router\Exception;
 use Throwable;
 
 /**
- * Class RouteNotFoundException
- * @package Framework\Http\Router\Exception
+ * Class RouteNotFoundException.
  */
 class RouteNotFoundException extends \LogicException
 {
@@ -15,13 +14,14 @@ class RouteNotFoundException extends \LogicException
 
     /**
      * RouteNotFoundException constructor.
+     *
      * @param $name
-     * @param array $params
+     * @param array          $params
      * @param Throwable|null $previous
      */
     public function __construct($name, array $params, \Throwable $previous = null)
     {
-        parent::__construct('Route "' . $name . '" not found', 0, $previous);
+        parent::__construct('Route "'.$name.'" not found', 0, $previous);
         $this->name = $name;
         $this->params = $params;
     }
@@ -29,7 +29,7 @@ class RouteNotFoundException extends \LogicException
     /**
      * @return string
      */
-    public function getName() : string
+    public function getName(): string
     {
         return  $this->name;
     }
@@ -37,9 +37,8 @@ class RouteNotFoundException extends \LogicException
     /**
      * @return array
      */
-    public function getParams() : array
+    public function getParams(): array
     {
         return $this->params;
     }
-
 }

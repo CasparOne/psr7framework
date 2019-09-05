@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Framework\Http\Pipeline;
 
 use Interop\Http\Server\RequestHandlerInterface;
@@ -20,7 +19,9 @@ class PsrHandlerWrapper implements RequestHandlerInterface
      * Handles a request and produces a response.
      *
      * May call other collaborating code to generate the response.
+     *
      * @param ServerRequestInterface $request
+     *
      * @return ResponseInterface
      */
     public function handle(ServerRequestInterface $request)

@@ -6,14 +6,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
 /**
- * Class ShowAction
- * @package App\Http\Action\Blog
+ * Class ShowAction.
  */
 class ShowAction
 {
     /**
      * @param ServerRequestInterface $request
-     * @param callable $next
+     * @param callable               $next
+     *
      * @return JsonResponse
      */
     public function __invoke(ServerRequestInterface $request, callable $next)
@@ -23,6 +23,6 @@ class ShowAction
             return $next($request);
         }
 
-        return new JsonResponse(['id' => $id, 'title' => 'Post # ' . $id]);
+        return new JsonResponse(['id' => $id, 'title' => 'Post # '.$id]);
     }
 }

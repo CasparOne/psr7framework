@@ -7,19 +7,19 @@ use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
 /**
- * Class HelloAction
- * @package App\Http\Action
+ * Class HelloAction.
  */
 class HelloAction
 {
     /**
      * @param ServerRequestInterface $request
+     *
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request) : ResponseInterface
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $name = $request->getQueryParams()['name'] ?? 'Guest';
 
-        return new HtmlResponse('Hello, ' . $name . '!');
+        return new HtmlResponse('Hello, '.$name.'!');
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests\App\Http\Action\Blog;
 
 use App\Http\Action\Blog\ShowAction;
@@ -16,10 +17,11 @@ class ShowActionTest extends TestCase
         $response = $action($request, new NotFoundHandler());
         self::assertEquals(200, $response->getStatusCode());
         self::assertJsonStringEqualsJsonString(
-            json_encode(['id' => $id, 'title' => 'Post # ' . $id]),
+            json_encode(['id' => $id, 'title' => 'Post # '.$id]),
             $response->getBody()->getContents()
         );
     }
+
     public function testNotFound()
     {
         $action = new ShowAction();

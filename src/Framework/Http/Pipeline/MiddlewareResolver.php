@@ -8,18 +8,19 @@ use Psr\Http\Message\ServerRequestInterface;
 use Zend\Stratigility\MiddlewarePipe;
 
 /**
- * Class MiddlewareResolver
- * @package Framework\Http
+ * Class MiddlewareResolver.
  */
 class MiddlewareResolver
 {
     /**
      * @param $handler
      * @param ResponseInterface $responsePrototype
+     *
      * @return callable
+     *
      * @throws \ReflectionException
      */
-    public function resolve($handler, ResponseInterface $responsePrototype) : callable
+    public function resolve($handler, ResponseInterface $responsePrototype): callable
     {
         if (\is_array($handler)) {
             return $this->createPipe($handler, $responsePrototype);
@@ -28,6 +29,7 @@ class MiddlewareResolver
         if (\is_string($handler)) {
             return function (ServerRequestInterface $request, ResponseInterface $response, callable $next) use ($handler) {
                 $middleware = $this->resolve(new $handler(), $response);
+
                 return $middleware($request, $response, $next);
             };
         }
@@ -43,11 +45,12 @@ class MiddlewareResolver
             if ($reflection->hasMethod('__invoke')) {
                 $method = $reflection->getMethod('__invoke');
                 $parameters = $method->getParameters();
-                if (\count($parameters) === 2 && $parameters[1]->isCallable()) {
+                if (2 === \count($parameters) && $parameters[1]->isCallable()) {
                     return function (ServerRequestInterface $request, ResponseInterface $response, callable $next) use ($handler) {
                         return $handler($request, $next);
                     };
                 }
+
                 return $handler;
             }
         }
@@ -58,16 +61,19 @@ class MiddlewareResolver
     /**
      * @param array $handlers
      * @param mixed $responsePrototype
+     *
      * @return MiddlewarePipe
+     *
      * @throws \ReflectionException
      */
-    protected function createPipe(array $handlers, $responsePrototype) : MiddlewarePipe
+    protected function createPipe(array $handlers, $responsePrototype): MiddlewarePipe
     {
         $pipeline = new MiddlewarePipe();
         $pipeline->setResponsePrototype($responsePrototype);
         foreach ($handlers as $handler) {
             $pipeline->pipe($this->resolve($handler, $responsePrototype));
         }
+
         return $pipeline;
     }
 }

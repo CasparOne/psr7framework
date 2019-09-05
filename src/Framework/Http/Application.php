@@ -9,8 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Zend\Stratigility\MiddlewarePipe;
 
 /**
- * Class Application
- * @package Framework\Http
+ * Class Application.
  */
 class Application extends MiddlewarePipe
 {
@@ -23,10 +22,11 @@ class Application extends MiddlewarePipe
 
     /**
      * Application constructor.
+     *
      * @param MiddlewareResolver $resolver
-     * @param RouterInterface $router
-     * @param callable $defaultHandler
-     * @param ResponseInterface $responsePrototype
+     * @param RouterInterface    $router
+     * @param callable           $defaultHandler
+     * @param ResponseInterface  $responsePrototype
      */
     public function __construct(MiddlewareResolver $resolver, RouterInterface $router, callable $defaultHandler, ResponseInterface $responsePrototype)
     {
@@ -40,38 +40,41 @@ class Application extends MiddlewarePipe
     /**
      * @param $path
      * @param mixed $middleware
+     *
      * @return MiddlewarePipe
+     *
      * @throws \ReflectionException
      */
-    public function pipe($path, $middleware = null) : MiddlewarePipe
+    public function pipe($path, $middleware = null): MiddlewarePipe
     {
-        if ($middleware === null) {
+        if (null === $middleware) {
             return parent::pipe($this->resolver->resolve($path, $this->responsePrototype));
         }
+
         return parent::pipe($path, $this->resolver->resolve($middleware, $this->responsePrototype));
     }
 
-    public function run(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
+    public function run(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         return $this($request, $response, $this->defaultHandler);
     }
 
-    public function route($name, $path, $handler, array $options =[]) : void
+    public function route($name, $path, $handler, array $options = []): void
     {
         $this->router->addRoute($name, $path, $handler, [], $options);
     }
 
-    public function any($name, $path, $handler, array $options =[]) : void
+    public function any($name, $path, $handler, array $options = []): void
     {
         $this->router->addRoute($name, $path, $handler, [], $options);
     }
 
-    public function get($name, $path, $handler, array $options =[]) : void
+    public function get($name, $path, $handler, array $options = []): void
     {
         $this->router->addRoute($name, $path, $handler, ['GET'], $options);
     }
 
-    public function post($name, $path, $handler, array $options =[]) : void
+    public function post($name, $path, $handler, array $options = []): void
     {
         $this->router->addRoute($name, $path, $handler, ['POST'], $options);
     }

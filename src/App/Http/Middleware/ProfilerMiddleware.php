@@ -8,17 +8,17 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class ProfilerMiddleware
- * @package App\Http\Middleware
+ * Class ProfilerMiddleware.
  */
 class ProfilerMiddleware implements MiddlewareInterface
 {
     const HEADER = 'X-Response-Time';
+
     /**
      * Process an incoming server request and return a response, optionally delegating
      * response creation to a handler.
      *
-     * @param ServerRequestInterface $request
+     * @param ServerRequestInterface  $request
      * @param RequestHandlerInterface $handler
      *
      * @return ResponseInterface
@@ -32,7 +32,3 @@ class ProfilerMiddleware implements MiddlewareInterface
         return $response->withHeader(self::HEADER, sprintf('%2.3fms', (microtime(true) - $startTime) * 1000));
     }
 }
-
-
-
-
