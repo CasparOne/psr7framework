@@ -11,11 +11,13 @@ class Container implements \ArrayAccess
     private $results = [];
 
     /**
-     * Get parameters from container.
+     * Get parameters from container with auto wiring.
      *
      * @param $id
      *
      * @return mixed
+     *
+     * @throws \ReflectionException
      */
     public function get($id)
     {
@@ -24,7 +26,26 @@ class Container implements \ArrayAccess
         }
         if (!array_key_exists($id, $this->definitions)) {
             if (class_exists($id)) {
-                return $this->results[$id] = new $id();
+                $reflection = new \ReflectionClass($id);
+                $arguments = [];
+                if (null !== ($constructor = $reflection->getConstructor())) {
+                    foreach ($constructor->getParameters() as $param) {
+                        if ($paramClass = $param->getClass()) {
+                            $arguments[] = $this->get($paramClass->getName());
+                        } elseif ($param->isArray()) {
+                            $arguments[] = [];
+                        } else {
+                            if (!$param->isDefaultValueAvailable()) {
+                                throw new ServiceNotFoundException('Unable to resolve "'.
+                                $param->getName().'" in service '.$id);
+                            }
+                            $arguments[] = $param->getDefaultValue();
+                        }
+                    }
+                }
+                $this->results[$id] = $reflection->newInstanceArgs($arguments);
+
+                return $this->results[$id];
             }
             throw new ServiceNotFoundException('Undefined parameter "'.$id.'"');
         }

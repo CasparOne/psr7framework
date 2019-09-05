@@ -39,18 +39,9 @@ $container->set(BasicAuthMiddleware::class, function (Container $c) {
 $container->set(ErrorHandlerMiddleware::class, function (Container $c) {
     return new ErrorHandlerMiddleware($c->get('config')['debug']);
 });
-$container->set(RouteMiddleware::class, function (Container $c) {
-    return new RouteMiddleware($c->get(RouterInterface::class));
-});
-// Resolver
 $container->set(MiddlewareResolver::class, function (Container $c) {
     return new MiddlewareResolver($c);
 });
-// Dispatcher
-$container->set(DispatchMiddleware::class, function (Container $c) {
-    return new DispatchMiddleware($c->get(MiddlewareResolver::class));
-});
-// Router
 $container->set(RouterInterface::class, function () {
     return new AuraRouterAdapter(new RouterContainer());
 });
