@@ -1,8 +1,15 @@
 <?php
 
+use App\Http\Action\AboutAction;
+use App\Http\Action\Blog\IndexAction;
+use App\Http\Action\Blog\ShowAction;
+use App\Http\Action\CabinetAction;
+use App\Http\Action\HelloAction;
 use App\Http\Middleware\BasicAuthMiddleware;
+use App\Http\Middleware\CredentialsMiddleware;
 use App\Http\Middleware\ErrorHandlerMiddleware;
 use App\Http\Middleware\NotFoundHandler;
+use App\Http\Middleware\ProfilerMiddleware;
 use Aura\Router\RouterContainer;
 use Framework\Container\Container;
 use Framework\Http\Application;
@@ -36,8 +43,8 @@ $container->set(RouteMiddleware::class, function (Container $c) {
     return new RouteMiddleware($c->get(RouterInterface::class));
 });
 // Resolver
-$container->set(MiddlewareResolver::class, function () {
-    return new MiddlewareResolver();
+$container->set(MiddlewareResolver::class, function (Container $c) {
+    return new MiddlewareResolver($c);
 });
 // Dispatcher
 $container->set(DispatchMiddleware::class, function (Container $c) {
@@ -46,5 +53,26 @@ $container->set(DispatchMiddleware::class, function (Container $c) {
 // Router
 $container->set(RouterInterface::class, function () {
     return new AuraRouterAdapter(new RouterContainer());
-}
-);
+});
+//##########################################
+$container->set(CredentialsMiddleware::class, function () {
+    return new CredentialsMiddleware();
+});
+$container->set(ProfilerMiddleware::class, function () {
+    return new ProfilerMiddleware();
+});
+$container->set(HelloAction::class, function () {
+    return new HelloAction();
+});
+$container->set(AboutAction::class, function () {
+    return new AboutAction();
+});
+$container->set(CabinetAction::class, function () {
+    return new CabinetAction();
+});
+$container->set(IndexAction::class, function () {
+    return new IndexAction();
+});
+$container->set(ShowAction::class, function () {
+    return new ShowAction();
+});
