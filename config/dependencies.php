@@ -54,25 +54,4 @@ $container->set(DispatchMiddleware::class, function (Container $c) {
 $container->set(RouterInterface::class, function () {
     return new AuraRouterAdapter(new RouterContainer());
 });
-//##########################################
-$container->set(CredentialsMiddleware::class, function () {
-    return new CredentialsMiddleware();
-});
-$container->set(ProfilerMiddleware::class, function () {
-    return new ProfilerMiddleware();
-});
-$container->set(HelloAction::class, function () {
-    return new HelloAction();
-});
-$container->set(AboutAction::class, function () {
-    return new AboutAction();
-});
-$container->set(CabinetAction::class, function () {
-    return new CabinetAction();
-});
-$container->set(IndexAction::class, function () {
-    return new IndexAction();
-});
-$container->set(ShowAction::class, function () {
-    return new ShowAction();
-});
+
