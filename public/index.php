@@ -70,11 +70,9 @@ $container->set(DispatchMiddleware::class, function (Container $c) {
     return new DispatchMiddleware($c->get(MiddlewareResolver::class));
 });
 // Router
-$container->set(
-    RouterInterface::class,
-    function () {
-        return new AuraRouterAdapter(new RouterContainer());
-    }
+$container->set(RouterInterface::class, function () {
+    return new AuraRouterAdapter(new RouterContainer());
+}
 );
 
 //##############################################

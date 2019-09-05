@@ -3,6 +3,7 @@
 namespace Framework\Http;
 
 use Framework\Http\Pipeline\MiddlewareResolver;
+use Framework\Http\Router\RouteData;
 use Framework\Http\Router\RouterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -59,23 +60,23 @@ class Application extends MiddlewarePipe
         return $this($request, $response, $this->defaultHandler);
     }
 
-    public function route($name, $path, $handler, array $options = []): void
+    public function route($name, $path, $handler, array $methods, array $options = []): void
     {
-        $this->router->addRoute($name, $path, $handler, [], $options);
+        $this->router->addRoute(new RouteData($name, $path, $handler, $methods, $options));
     }
 
     public function any($name, $path, $handler, array $options = []): void
     {
-        $this->router->addRoute($name, $path, $handler, [], $options);
+        $this->route($name, $path, $handler, [], $options);
     }
 
     public function get($name, $path, $handler, array $options = []): void
     {
-        $this->router->addRoute($name, $path, $handler, ['GET'], $options);
+        $this->route($name, $path, $handler, ['GET'], $options);
     }
 
     public function post($name, $path, $handler, array $options = []): void
     {
-        $this->router->addRoute($name, $path, $handler, ['POST'], $options);
+        $this->route($name, $path, $handler, ['POST'], $options);
     }
 }
