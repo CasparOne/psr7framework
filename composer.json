@@ -12,8 +12,10 @@
     "psr/http-message": "^1.0",
     "psr/http-server-handler": "^1.0",
     "roave/security-advisories": "dev-master",
+    "zendframework/zend-config-aggregator": "^1.1",
     "zendframework/zend-diactoros": "^1.6",
     "zendframework/zend-httphandlerrunner": "^1.1",
+    "zendframework/zend-servicemanager": "^3.4",
     "zendframework/zend-stratigility": "2.1.2"
   },
   "autoload": {
