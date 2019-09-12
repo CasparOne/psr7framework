@@ -3,6 +3,7 @@
 namespace App\Http\Action;
 
 use App\Http\Middleware\BasicAuthMiddleware;
+use Framework\Template\TemplateRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -12,6 +13,17 @@ use Zend\Diactoros\Response\HtmlResponse;
  */
 class CabinetAction
 {
+    private $renderer;
+
+    /**
+     * CabinetAction constructor.
+     * @param TemplateRenderer $renderer
+     */
+    public function __construct(TemplateRenderer $renderer)
+    {
+        $this->renderer = $renderer;
+    }
+
     /**
      * @param ServerRequestInterface $request
      *
@@ -21,6 +33,7 @@ class CabinetAction
     {
         $username = $request->getAttribute(BasicAuthMiddleware::ATTRIVUTE);
 
-        return new HtmlResponse('I am logged in as '.ucfirst($username));
+
+        return new HtmlResponse($this->renderer->render('cabinet', ['username' => $username]));
     }
 }
