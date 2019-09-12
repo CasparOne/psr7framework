@@ -42,7 +42,7 @@
         <div class="jumbotron">
             <h1>Hello!</h1>
             <p>
-                Congratulations! You have successfully created your application.
+                Congratulations, <?= ucfirst($name) ?>! You have successfully created your application.
             </p>
         </div>
     </main>

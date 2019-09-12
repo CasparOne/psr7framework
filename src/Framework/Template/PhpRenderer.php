@@ -2,7 +2,7 @@
 
 namespace Framework\Template;
 
-class TemplateRenderer
+class PhpRenderer implements TemplateRendererInterface
 {
     private $path;
 

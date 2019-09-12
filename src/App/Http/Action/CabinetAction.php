@@ -3,7 +3,7 @@
 namespace App\Http\Action;
 
 use App\Http\Middleware\BasicAuthMiddleware;
-use Framework\Template\TemplateRenderer;
+use Framework\Template\TemplateRendererInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -17,9 +17,9 @@ class CabinetAction
 
     /**
      * CabinetAction constructor.
-     * @param TemplateRenderer $renderer
+     * @param TemplateRendererInterface $renderer
      */
-    public function __construct(TemplateRenderer $renderer)
+    public function __construct(TemplateRendererInterface $renderer)
     {
         $this->renderer = $renderer;
     }
