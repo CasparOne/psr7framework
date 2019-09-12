@@ -23,6 +23,9 @@ return [
             Framework\Http\Router\RouterInterface::class => function () {
                 return new Framework\Http\Router\AuraRouterAdapter(new Aura\Router\RouterContainer());
             },
+            Framework\Template\TemplateRenderer::class => function (Psr\Container\ContainerInterface $c) {
+                return new Framework\Template\TemplateRenderer($c->get('config')['view']);
+            },
         ],
     ],
     'debug' => false,
