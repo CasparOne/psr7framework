@@ -33,4 +33,9 @@ class PhpRenderer implements TemplateRendererInterface
         return $this->render($this->extends, ['content' => $content]);
     }
 
+    public function extend($view)
+    {
+        $this->extends = $view;
+    }
+
 }
