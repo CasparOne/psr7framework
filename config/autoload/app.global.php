@@ -20,14 +20,13 @@ return [
             Framework\Http\Pipeline\MiddlewareResolver::class => function (Psr\Container\ContainerInterface $c) {
                 return new Framework\Http\Pipeline\MiddlewareResolver($c);
             },
-            Framework\Http\Router\RouterInterface::class      => function () {
+            Framework\Http\Router\RouterInterface::class => function () {
                 return new Framework\Http\Router\AuraRouterAdapter(new Aura\Router\RouterContainer());
             },
-            Framework\Template\TemplateRendererInterface::class             => function (Psr\Container\ContainerInterface $c) {
+            Framework\Template\TemplateRendererInterface::class => function (Psr\Container\ContainerInterface $c) {
                 return new Framework\Template\PhpRenderer($c->get('config')['view']);
             },
         ],
     ],
     'debug' => false,
-
 ];

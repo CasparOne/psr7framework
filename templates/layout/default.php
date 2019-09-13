@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title><?= $this->params['title'] ?> - App</title>
+    <?php echo $this->renderBlock('meta'); ?>
+    <title><?php echo $this->renderBlock('title'); ?> - App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <style>
@@ -39,7 +40,8 @@
 
 <div class="app-content">
     <main class="container">
-        <?= $content; ?>
+        <?php echo $this->renderBlock('breadcrumbs'); ?>
+        <?php echo $this->renderBlock('content'); ?>
     </main>
 </div>
 

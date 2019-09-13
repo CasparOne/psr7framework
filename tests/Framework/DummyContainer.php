@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Framework;
-
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -11,23 +9,23 @@ use Zend\ServiceManager\Exception\ServiceNotFoundException;
 
 class DummyContainer implements ContainerInterface
 {
-
     /**
      * Finds an entry of the container by its identifier and returns it.
      *
      * @param string $id Identifier of the entry to look for.
      *
      * @return mixed Entry.
-     * @throws ContainerExceptionInterface Error while retrieving the entry.
      *
+     * @throws ContainerExceptionInterface Error while retrieving the entry.
      * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
-     */public function get($id)
+     */
+    public function get($id)
     {
         if (class_exists($id)) {
             throw new ServiceNotFoundException($id);
         }
-        return new $id;
 
+        return new $id();
     }
 
     /**

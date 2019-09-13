@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Framework\Template;
-
 
 interface TemplateRendererInterface
 {
@@ -11,5 +9,4 @@ interface TemplateRendererInterface
      * @param array $params
      */
     public function render(string $view, array $params = []);
-
 }
