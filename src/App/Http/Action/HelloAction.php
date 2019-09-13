@@ -31,6 +31,6 @@ class HelloAction
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $name = $request->getQueryParams()['name'] ?? 'Guest';
-        return new HtmlResponse($this->renderer->render('hello', ['name' => $name]));
+        return new HtmlResponse($this->renderer->render('app/hello', ['name' => $name]));
     }
 }
