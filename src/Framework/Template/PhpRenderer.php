@@ -23,7 +23,7 @@ class PhpRenderer implements TemplateRendererInterface
      */
     public function render($view, array $params = []): string
     {
-        $templateFile = $this->path.'/'.$view.'.php';
+        $templateFile = $this->path . '/' . $view . '.php';
         ob_start();
         extract($params, EXTR_SKIP);
         $this->extends = null;
@@ -45,6 +45,14 @@ class PhpRenderer implements TemplateRendererInterface
         $this->extends = $view;
     }
 
+    public function block($name, $content)
+    {
+        if ($this->hasBlock($name)) {
+            return;
+        }
+        $this->blocks[$name] = $content;
+    }
+
     public function beginBlock($name): void
     {
         $this->blockNames->push($name);
@@ -53,12 +61,34 @@ class PhpRenderer implements TemplateRendererInterface
 
     public function endBlock(): void
     {
+        $content = ob_get_clean();
         $name = $this->blockNames->pop();
-        $this->blocks[$name] = ob_get_clean();
+        if ($this->hasBlock($name)) {
+            return;
+        }
+        $this->blocks[$name] = $content;
     }
 
     public function renderBlock($name)
     {
-        return $this->blocks[$name] ?? '';
+        $block = $this->blocks['name'] ?? null;
+        if ($block instanceof \Closure) {
+            return $block;
+        }
+        return $block ?? '';
+    }
+
+    public function hasBlock($name)
+    {
+        return array_key_exists($name, $this->blocks);
+    }
+
+    public function ensureBlock($name)
+    {
+        if ($this->hasBlock($name)) {
+            return false;
+        }
+        $this->beginBlock($name);
+        return true;
     }
 }

@@ -7,6 +7,14 @@ $this->extend('layout/default'); ?>
         <?php echo $this->renderBlock('main'); ?>
     </div>
     <div class="col-md-3">
+        <?php $this->block('sidebar', function () {
+    ob_start(); ?>
+        <div class="panel panel-default">
+            <div class="panel-heading">Site</div>
+            <div class="panel-body">Site navigation</div>
+        </div>
+        <?php return ob_get_clean();
+}); ?>
         <?php echo $this->renderBlock('sidebar'); ?>
     </div>
 </div>

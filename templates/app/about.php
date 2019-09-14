@@ -5,13 +5,6 @@ $this->extend('layout/columns');
 
 <?php $this->beginBlock('title'); ?>About<?php $this->endBlock(); ?>
 
-<?php $this->beginBlock('sidebar'); ?>
-<div class="panel panel-default">
-    <div class="panel-heading">Site</div>
-    <div class="panel-body">Site navigation</div>
-</div>
-<?php $this->endBlock(); ?>
-
 <?php $this->beginBlock('breadcrumbs'); ?>
 <ul class="breadcrumb">
     <li><a href="/">Home</a></li>
