@@ -1,13 +1,11 @@
 <?php
-/** @var PhpRenderer $this */
+/** @var Framework\Template\PhpRenderer $this */
 $this->extend('layout/columns');
-use Framework\Template\PhpRenderer;
-
 ?>
 <?php $this->beginBlock('title'); ?>Cabinet<?php $this->endBlock(); ?>
 <?php $this->beginBlock('breadcrumbs'); ?>
 <ul class="breadcrumb">
-    <li><a href="/">Home</a></li>
+    <li><a href="<?php echo $this->encode($this->path('home')); ?>">Home</a></li>
     <li class="active">Cabinet</li>
 </ul>
 <?php $this->endBlock(); ?>
@@ -19,5 +17,5 @@ use Framework\Template\PhpRenderer;
 </div>
 <?php $this->endBlock(); ?>
 <?php $this->beginBlock('main'); ?>
-<h1>Cabinet of <?php echo htmlspecialchars(ucfirst($username), ENT_QUOTES | ENT_SUBSTITUTE); ?></h1>
+<h1>Cabinet of <?php echo $this->encode($username); ?></h1>
 <?php $this->endBlock(); ?>
