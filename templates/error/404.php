@@ -1,20 +1,17 @@
 <?php
+
 /** @var Framework\Template\PhpRenderer $this */
-$this->extend('layout/columns');
+$this->extend('layout/default');
 ?>
-
-<?php $this->beginBlock('title'); ?>About<?php $this->endBlock(); ?>
-
+<?php $this->beginBlock('title'); ?>404 - Not Found<?php $this->endBlock(); ?>
 <?php $this->beginBlock('breadcrumbs'); ?>
 <ul class="breadcrumb">
     <li><a href="<?php echo $this->encode($this->path('home')); ?>">Home</a></li>
+    <li><a href="<?php echo $this->encode($this->path('about')); ?>">About</a></li>
     <li><a href="<?php echo $this->encode($this->path('blog')); ?>">Blog</a></li>
-    <li class="active">About</li>
+    <li class="active">Error</li>
 </ul>
 <?php $this->endBlock(); ?>
-<?php $this->beginBlock('meta'); ?>
-    <meta name="about" content="About the site">
-<?php $this->endBlock(); ?>
-<?php $this->beginBlock('main'); ?>
-<h1>About the site</h1>
+<?php $this->beginBlock('content'); ?>
+<h1>404 - Error! Page not found!</h1>
 <?php $this->endBlock(); ?>

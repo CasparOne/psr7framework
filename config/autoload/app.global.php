@@ -12,7 +12,7 @@ return [
                 return new Framework\Http\Application(
                     $c->get(Framework\Http\Pipeline\MiddlewareResolver::class),
                     $c->get(Framework\Http\Router\RouterInterface::class),
-                    new App\Http\Middleware\NotFoundHandler(),
+                    $c->get(App\Http\Middleware\NotFoundHandler::class),
                     new Zend\Diactoros\Response()
                 );
             },
