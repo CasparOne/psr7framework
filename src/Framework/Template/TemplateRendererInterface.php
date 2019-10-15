@@ -5,8 +5,8 @@ namespace Framework\Template;
 interface TemplateRendererInterface
 {
     /**
-     * @param $view
+     * @param $name
      * @param array $params
      */
-    public function render(string $view, array $params = []);
+    public function render(string $name, array $params = []);
 }

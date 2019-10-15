@@ -1,7 +1,5 @@
 <?php
 
-use Framework\Http\Router\RouterInterface;
-
 return [
     'dependencies' => [
         'abstract_factories' => [
@@ -27,8 +25,10 @@ return [
                 return new Framework\Http\Router\AuraRouterAdapter(new Aura\Router\RouterContainer());
             },
             Framework\Template\TemplateRendererInterface::class => function (Psr\Container\ContainerInterface $c) {
-                return new Framework\Template\PhpRenderer($c->get('config')['view'],
-                    $c->get(RouterInterface::class));
+                $renderer = new \Framework\Template\Php\PhpRenderer($c->get('config')['view']);
+                $renderer->addExtension($c->get(\Framework\Template\Php\Extension\RouteExtension::class));
+
+                return $renderer;
             },
         ],
     ],
