@@ -18,6 +18,9 @@ class PostReadRepository
         ];
     }
 
+    /**
+     * @return PostView[]
+     */
     public function getAll(): array
     {
         return array_reverse($this->posts);
