@@ -17,7 +17,8 @@ return [
                 );
             },
             App\Http\Middleware\ErrorHandlerMiddleware::class => function (Psr\Container\ContainerInterface $c) {
-                return new App\Http\Middleware\ErrorHandlerMiddleware($c->get('config')['debug']);
+                return new App\Http\Middleware\ErrorHandlerMiddleware($c->get('config')['debug'],
+                    $c->get(\Framework\Template\TemplateRendererInterface::class));
             },
             Framework\Http\Pipeline\MiddlewareResolver::class => function (Psr\Container\ContainerInterface $c) {
                 return new Framework\Http\Pipeline\MiddlewareResolver($c);
@@ -26,7 +27,8 @@ return [
                 return new Framework\Http\Router\AuraRouterAdapter(new Aura\Router\RouterContainer());
             },
             Framework\Template\TemplateRendererInterface::class => function (Psr\Container\ContainerInterface $c) {
-                return new Framework\Template\PhpRenderer($c->get('config')['view'], $c->get(RouterInterface::class));
+                return new Framework\Template\PhpRenderer($c->get('config')['view'],
+                    $c->get(RouterInterface::class));
             },
         ],
     ],
