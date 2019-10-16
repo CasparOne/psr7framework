@@ -4,6 +4,7 @@ docs/
 vendor/
 node_modules/
 old/
+var/
 .phpstorm.meta.php
 _ide_helper.php
 /node_modules

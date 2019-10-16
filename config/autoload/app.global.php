@@ -25,12 +25,40 @@ return [
                 return new Framework\Http\Router\AuraRouterAdapter(new Aura\Router\RouterContainer());
             },
             Framework\Template\TemplateRendererInterface::class => function (Psr\Container\ContainerInterface $c) {
-                $renderer = new \Framework\Template\Php\PhpRenderer($c->get('config')['view']);
-                $renderer->addExtension($c->get(\Framework\Template\Php\Extension\RouteExtension::class));
+                $renderer = new \Framework\Template\Twig\TwigRenderer($c->get(\Twig\Environment::class),
+                    $c->get('config')['twig']['extension']);
 
                 return $renderer;
+            },
+            \Twig\Environment::class => function (\Psr\Container\ContainerInterface $c) {
+                $config = $c->get('config')['twig'];
+                $debug = $c->get('config')['debug'];
+                $templateDir = $config['view'];
+                $cacheDir = $config['cache'];
+
+                $loader = new \Twig\Loader\FilesystemLoader();
+                $loader->addPath($templateDir);
+
+                $environment = new \Twig\Environment($loader, [
+                    'cache' => $debug ? false : $cacheDir,
+                    'debug' => $debug,
+                    'strict_variables' => $debug,
+                    'auto_reload' => $debug,
+                    ]);
+                if ($debug) {
+                    $environment->addExtension(new \Twig\Extension\DebugExtension());
+                }
+
+                $environment->addExtension($c->get(\Framework\Template\Twig\Extension\RouteExtension::class));
+
+                return $environment;
             },
         ],
     ],
     'debug' => false,
+    'twig' => [
+        'view' => 'templates',
+        'extension' => '.html.twig',
+        'cache' => 'var/cache/twig',
+    ],
 ];
